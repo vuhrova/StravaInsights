@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Power BI / Fabric local state (never commit)
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+**/definition/localSettings.json
+*.pbix.bak
+
+# Secrets and local configuration - Strava credentials live only in Azure Key Vault
+.env
+*.env
+*.pem
+*.pfx
+secrets*.json
+**/auth_tokens*
+
+# Exported data / screenshots produced locally
+exports/
+*.parquet
+*.csv
