@@ -36,7 +36,7 @@ import strava_auth  # noqa: E402
 LAKEHOUSES = [("Bronze", True), ("Strava_Silver", False), ("Strava_Gold", False)]
 PIPELINE = "Refresh_Orchestration"
 MODEL = "StravaInsights_SM"
-REPORT = "Strava Trends"
+REPORT = "Strava Insights"
 AGENT = "Strava insights agent"
 SECRETS_OFFICER = "Key Vault Secrets Officer"
 

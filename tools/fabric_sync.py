@@ -3,8 +3,8 @@
 Authentication uses the signed-in Azure CLI account (``az login``); no secrets are stored here.
 
 Usage:
-    python tools/fabric_sync.py export [--items "Strava Trends" Strava_Ingest ...]
-    python tools/fabric_sync.py deploy "workspace/Strava Trends.Report" [more folders ...]
+    python tools/fabric_sync.py export [--items "Strava Insights" Strava_Ingest ...]
+    python tools/fabric_sync.py deploy "workspace/Strava Insights.Report" [more folders ...]
     python tools/fabric_sync.py run Refresh_Orchestration --type DataPipeline
     python tools/fabric_sync.py dax StravaInsights_SM "EVALUATE ROW(\\"x\\", [Total Workouts])"
 

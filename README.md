@@ -48,7 +48,7 @@ flowchart LR
     SV -->|Gold_Longevity_Metrics| G
     G -->|Data_Quality_Checks| G
     G --> SM[StravaInsights_SM<br/>Direct Lake model]
-    SM --> R[Strava Trends report]
+    SM --> R[Strava Insights report]
     G --> DA[Strava insights agent]
 ```
 
@@ -93,7 +93,7 @@ Run `tools/install.py` once first; the other tools then target the workspace and
 ```powershell
 az login                                                     # account with access to your Fabric workspace
 python tools/fabric_sync.py export                           # pull current definitions from Fabric (your IDs -> placeholders)
-python tools/fabric_sync.py deploy "workspace/Strava Trends.Report"
+python tools/fabric_sync.py deploy "workspace/Strava Insights.Report"
 python tools/fabric_sync.py run Refresh_Orchestration --type DataPipeline
 python tools/fabric_sync.py dax StravaInsights_SM "EVALUATE ROW(\"VO2max running\", [VO2max Running])"
 ```

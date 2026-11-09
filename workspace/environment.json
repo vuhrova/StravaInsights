@@ -30,7 +30,7 @@
     "Notebook/Strava_Silver_Transform": "00000000-0000-4000-8000-00000000010a",
     "Notebook/Strava_Workout_Generator": "00000000-0000-4000-8000-00000000010b",
     "Notebook/Training_Weekly_Metrics": "00000000-0000-4000-8000-00000000010c",
-    "Report/Strava Trends": "00000000-0000-4000-8000-00000000010d",
+    "Report/Strava Insights": "00000000-0000-4000-8000-00000000010d",
     "SemanticModel/StravaInsights_SM": "00000000-0000-4000-8000-00000000010e"
   },
   "sqlConnectionString": "your-sql-endpoint.datawarehouse.fabric.microsoft.com",

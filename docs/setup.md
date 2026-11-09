@@ -64,7 +64,7 @@ What happens:
    credentials and the refresh token go straight into Key Vault.
 5. The notebooks and the **Refresh_Orchestration** pipeline are deployed, and the daily schedule is set.
 6. The pipeline runs once to load your history. You can watch it in the workspace under **Monitor**.
-7. The semantic model, the **Strava Trends** report and the data agent are deployed.
+7. The semantic model, the **Strava Insights** report and the data agent are deployed.
 
 At the end the installer prints the link to your report. Your settings (workspace, vault, schedule, no secrets) are
 saved in `stravainsights.local.json` so the next run needs no arguments. The file is git-ignored, so it is never
