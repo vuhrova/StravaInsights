@@ -186,7 +186,7 @@ access token in memory at the start of each run and writes a rotated refresh tok
 `Strava_Auth` notebook is an alternative for re-authorizing from Fabric. No token table exists in any lakehouse (a data
 check enforces it).
 
-## Power BI report `Strava Trends`
+## Power BI report `Strava Insights`
 
 Every page has a synced **Period** slicer (`DimDate[Date]`, default *last 6 months*)
 and page buttons for navigation.
