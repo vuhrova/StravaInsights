@@ -1,0 +1,386 @@
+table FactDailyActivity
+	lineageTag: 00649c48-b5d2-4d07-b77d-6d21efefae7d
+	sourceLineageTag: [dbo].[FactDailyActivity]
+
+	measure 'Days in Period' = COUNTROWS(FactDailyActivity)
+		formatString: #,0
+		displayFolder: Longevity
+		lineageTag: 257d11df-8522-44cd-ae23-fffd28e48045
+
+	measure 'Weeks in Period' = DIVIDE([Days in Period], 7)
+		formatString: #,0.0
+		displayFolder: Longevity
+		lineageTag: bbfd803b-56cb-428d-8af2-65fec006e92f
+
+	/// Average workout minutes per calendar day (rest days count as 0).
+	measure 'Avg Daily Active Minutes' = DIVIDE(SUM(FactDailyActivity[active_minutes]), [Days in Period])
+		formatString: #,0
+		displayFolder: Longevity
+		lineageTag: fad9f716-5761-4941-a5e5-f34b75e40f67
+
+	measure 'Active Minutes per Week' = DIVIDE(SUM(FactDailyActivity[active_minutes]), [Weeks in Period])
+		formatString: #,0
+		displayFolder: Longevity
+		lineageTag: 87a53a63-d35b-49e5-b2ac-1e248765bb8c
+
+	measure 'Active Minutes' = SUM(FactDailyActivity[active_minutes])
+		formatString: #,0
+		displayFolder: Longevity
+		lineageTag: 484785c7-4f61-442a-8587-8d165180689f
+
+	measure 'Moderate Minutes' = SUM(FactDailyActivity[moderate_minutes])
+		formatString: #,0
+		displayFolder: Longevity
+		lineageTag: 4f260182-3d50-494c-a387-f482bbb80a04
+
+	measure 'Vigorous Minutes' = SUM(FactDailyActivity[vigorous_minutes])
+		formatString: #,0
+		displayFolder: Longevity
+		lineageTag: f84afb1e-c2a8-4d99-beea-e189663bbf3b
+
+	/// Moderate + 2 x vigorous minutes per week. WHO guideline: 150-300.
+	measure 'WHO Minutes per Week' = DIVIDE(SUM(FactDailyActivity[who_minutes]), [Weeks in Period])
+		formatString: #,0
+		displayFolder: Longevity
+		lineageTag: 0ed7a13a-1cab-4b6c-9a57-f2e89e1e4128
+
+	/// Share of weeks reaching at least 150 WHO-equivalent minutes.
+	measure 'WHO Guideline Weeks %' =
+			VAR _weeks =
+			    ADDCOLUMNS(
+			        SUMMARIZE(FactDailyActivity, DimDate[Week]),
+			        "@who", CALCULATE(SUM(FactDailyActivity[who_minutes]))
+			    )
+			RETURN DIVIDE(COUNTROWS(FILTER(_weeks, [@who] >= 150)), COUNTROWS(_weeks))
+		formatString: 0%
+		displayFolder: Longevity
+		lineageTag: 39fdc7cd-8641-48a0-96ab-1cef336ae09e
+
+	measure 'WHO Target Min' = IF(NOT ISEMPTY(FactDailyActivity), 150)
+		formatString: 0
+		displayFolder: Longevity
+		lineageTag: bb797039-4735-41c0-8f52-3adbc1966c76
+
+	measure 'WHO Target Max' = IF(NOT ISEMPTY(FactDailyActivity), 300)
+		formatString: 0
+		displayFolder: Longevity
+		lineageTag: 5b10a38a-2ff6-4144-829a-d9b4cb4f7e2e
+
+	measure 'Zone 2 Hours per Week' = DIVIDE(SUM(FactDailyActivity[zone2_minutes]) / 60, [Weeks in Period])
+		formatString: 0.0
+		displayFolder: Longevity
+		lineageTag: bcad0cc7-9404-44f4-b33a-347b3a0fd9ab
+
+	measure 'Zone 2 Hours' = SUM(FactDailyActivity[zone2_minutes]) / 60
+		formatString: 0.0
+		displayFolder: Longevity
+		lineageTag: a4ac36c5-377e-43dc-87fb-51f4372370cd
+
+	measure 'Zone 2 Target Hours' = IF(NOT ISEMPTY(FactDailyActivity), 3)
+		formatString: 0
+		displayFolder: Longevity
+		lineageTag: 07593f5c-c628-4ada-bc26-8ba6641e4f7b
+
+	measure 'Training Sessions' = SUM(FactDailyActivity[workouts])
+		formatString: #,0
+		displayFolder: Longevity
+		lineageTag: b55bce37-de4c-471a-a165-745b2c457184
+
+	measure 'Sessions per Week' = DIVIDE(SUM(FactDailyActivity[workouts]), [Weeks in Period])
+		formatString: 0.0
+		displayFolder: Longevity
+		lineageTag: fbc7b479-30fa-42ac-971e-0c0b59bd3819
+
+	measure 'Strength Sessions per Week' = DIVIDE(SUM(FactDailyActivity[strength_sessions]), [Weeks in Period])
+		formatString: 0.0
+		displayFolder: Longevity
+		lineageTag: 9f107617-f440-4ab2-ba9e-7331cfc49cfb
+
+	/// Days with at least 30 active minutes, per week.
+	measure 'Active Days per Week' = DIVIDE(CALCULATE(COUNTROWS(FactDailyActivity), FactDailyActivity[is_active_day] = TRUE()), [Weeks in Period])
+		formatString: 0.0
+		displayFolder: Longevity
+		lineageTag: b588acaf-164a-4768-aaaa-0e3889c36fb3
+
+	measure 'Avg Daily Steps' = AVERAGE(FactDailyActivity[steps])
+		formatString: #,0
+		displayFolder: Longevity
+		lineageTag: 625af3bb-e7e8-4831-8c80-b8170671eed3
+
+	measure 'Steps Source' =
+			IF(
+			    CALCULATE(COUNTROWS(FactDailyActivity), FactDailyActivity[steps_method] = "device") > 0,
+			    "Device steps",
+			    "Estimated from runs & walks"
+			)
+		displayFolder: Longevity
+		lineageTag: 532c4bcf-0e86-4b76-9a58-6ad46df9a7cd
+
+	/// Plain-language summary of the selected period: movement, consistency, aerobic base, fitness and the next focus.
+	measure 'Longevity Story' =
+			"1. Movement: " & [Story Movement]
+			    & UNICHAR(10) & "2. Consistency: " & [Story Consistency]
+			    & UNICHAR(10) & "3. Aerobic base: " & [Story Aerobic Base]
+			    & UNICHAR(10) & "4. Fitness: " & [Story Fitness]
+			    & UNICHAR(10) & "5. Focus next: " & [Story Focus]
+		displayFolder: Longevity
+		lineageTag: 61d61ca6-c32d-44c4-b7a4-cce2e9745dc2
+
+	measure 'Story Movement' =
+			VAR _who = [WHO Minutes per Week]
+			RETURN
+			    FORMAT([Avg Daily Active Minutes], "0") & " active min a day = " & FORMAT(_who, "#,0") & " WHO min a week. "
+			    & IF(_who >= 150, "Above the 150-300 guideline", "Below the 150 min guideline")
+			    & " (met in " & FORMAT([WHO Guideline Weeks %], "0%") & " of weeks)."
+		displayFolder: Longevity
+		lineageTag: c7feafa1-c8ec-4eba-9e4e-1cd81e6d4298
+
+	measure 'Story Consistency' =
+			FORMAT([Sessions per Week], "0.0") & " sessions and " & FORMAT([Active Days per Week], "0.0") & " active days a week; "
+			    & FORMAT([Strength Sessions per Week], "0.0") & " strength sessions (goal 2)."
+		displayFolder: Longevity
+		lineageTag: cfa53605-a57f-40ed-ae90-9cf53aa24fcb
+
+	measure 'Story Aerobic Base' =
+			VAR _z2 = [Zone 2 Hours per Week]
+			RETURN FORMAT(_z2, "0.0") & " h of easy Zone 2 a week (goal about 3 h) - " & IF(_z2 >= 3, "on target.", "below target.")
+		displayFolder: Longevity
+		lineageTag: 9ed0b562-f25e-46a9-af51-cf2f46b4ab48
+
+	measure 'Story Fitness' =
+			VAR _vo2run = [VO2max Running]
+			VAR _vo2cyc = [VO2max Cycling]
+			VAR _ftp = [FTP Latest W]
+			VAR _ftpChange = [FTP Change vs Prev Period]
+			RETURN
+			    IF(ISBLANK(_vo2run), "No running VO2max estimate in this period.", "Running VO2max est. " & FORMAT(_vo2run, "0.0") & " (VDOT).")
+			    & IF(ISBLANK(_vo2cyc), "", " Cycling VO2max est. " & FORMAT(_vo2cyc, "0.0") & ".")
+			    & IF(ISBLANK(_ftp), "", " Cycling FTP " & FORMAT(_ftp, "0") & " W"
+			        & IF(ISBLANK(_ftpChange), ".", ", " & FORMAT(_ftpChange, "+0%;-0%;0%") & " vs. previous period."))
+		displayFolder: Longevity
+		lineageTag: 42226cde-a029-4ca7-8d14-fd1746d7592b
+
+	measure 'Story Focus' =
+			SWITCH(TRUE(),
+			    [WHO Minutes per Week] < 150, "Move more: reach 150 WHO minutes a week before adding intensity.",
+			    [Strength Sessions per Week] < 2, "Strength: 2 sessions a week protect muscle and bone - the biggest gap now.",
+			    [Zone 2 Hours per Week] < 3, "Aerobic base: add easy Zone 2 rides or runs up to about 3 h a week.",
+			    "Keep the routine: all longevity habits are on target."
+			)
+		displayFolder: Longevity
+		lineageTag: 7907b616-72af-4905-b4a3-cf7855a89fee
+
+	column date_key
+		dataType: dateTime
+		isHidden
+		formatString: Short Date
+		sourceProviderType: date
+		lineageTag: 004b116e-52db-4ec9-abea-23db59f9b7cf
+		sourceLineageTag: date_key
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column workouts
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: d9914699-e20f-47be-9d98-f41fc76e13ec
+		sourceLineageTag: workouts
+		summarizeBy: none
+		sourceColumn: workouts
+
+		annotation SummarizationSetBy = Automatic
+
+	column cardio_sessions
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 0a543df6-3a54-40e5-9f6f-96e695cb0a1c
+		sourceLineageTag: cardio_sessions
+		summarizeBy: none
+		sourceColumn: cardio_sessions
+
+		annotation SummarizationSetBy = Automatic
+
+	column strength_sessions
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: be921948-c015-4f2e-88ef-599e35c3195c
+		sourceLineageTag: strength_sessions
+		summarizeBy: none
+		sourceColumn: strength_sessions
+
+		annotation SummarizationSetBy = Automatic
+
+	column active_minutes
+		dataType: double
+		formatString: #,0.0
+		sourceProviderType: float
+		lineageTag: 13d69324-0859-4c1d-be2e-afb4e9e6ad0a
+		sourceLineageTag: active_minutes
+		summarizeBy: none
+		sourceColumn: active_minutes
+
+		annotation SummarizationSetBy = Automatic
+
+	column moderate_minutes
+		dataType: double
+		formatString: #,0.0
+		sourceProviderType: float
+		lineageTag: de3a97b1-7a28-4b35-9bb9-2f9b7d2d1793
+		sourceLineageTag: moderate_minutes
+		summarizeBy: none
+		sourceColumn: moderate_minutes
+
+		annotation SummarizationSetBy = Automatic
+
+	column vigorous_minutes
+		dataType: double
+		formatString: #,0.0
+		sourceProviderType: float
+		lineageTag: 65b69996-ed24-477a-8522-f18d8b126f13
+		sourceLineageTag: vigorous_minutes
+		summarizeBy: none
+		sourceColumn: vigorous_minutes
+
+		annotation SummarizationSetBy = Automatic
+
+	column zone2_minutes
+		dataType: double
+		formatString: #,0.0
+		sourceProviderType: float
+		lineageTag: 19314711-f15b-4f48-84c2-8999c53c0f7d
+		sourceLineageTag: zone2_minutes
+		summarizeBy: none
+		sourceColumn: zone2_minutes
+
+		annotation SummarizationSetBy = Automatic
+
+	column who_minutes
+		dataType: double
+		formatString: #,0.0
+		sourceProviderType: float
+		lineageTag: 0cd4bed0-df21-47b4-9c95-b10f65e2a4f2
+		sourceLineageTag: who_minutes
+		summarizeBy: none
+		sourceColumn: who_minutes
+
+		annotation SummarizationSetBy = Automatic
+
+	column workout_steps
+		dataType: double
+		formatString: #,0
+		sourceProviderType: float
+		lineageTag: 2081028b-982b-4d3d-83e1-ddc0419f44b9
+		sourceLineageTag: workout_steps
+		summarizeBy: none
+		sourceColumn: workout_steps
+
+		annotation SummarizationSetBy = Automatic
+
+	column steps
+		dataType: int64
+		formatString: #,0
+		sourceProviderType: bigint
+		lineageTag: c195f408-dcf8-4971-b8b1-6ffde11bbde3
+		sourceLineageTag: steps
+		summarizeBy: none
+		sourceColumn: steps
+
+		annotation SummarizationSetBy = Automatic
+
+	column steps_method
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 4ecd5687-b668-41e7-b960-6dd42548edc9
+		sourceLineageTag: steps_method
+		summarizeBy: none
+		sourceColumn: steps_method
+
+		annotation SummarizationSetBy = Automatic
+
+	column distance_km
+		dataType: double
+		formatString: #,0.0
+		sourceProviderType: float
+		lineageTag: 8a7567cc-0a99-40a6-b632-d2de3a094b69
+		sourceLineageTag: distance_km
+		summarizeBy: none
+		sourceColumn: distance_km
+
+		annotation SummarizationSetBy = Automatic
+
+	column active_energy_kcal
+		dataType: double
+		formatString: #,0
+		sourceProviderType: float
+		lineageTag: f9150c0a-b417-43a3-9e0e-6cf0cfa63108
+		sourceLineageTag: active_energy_kcal
+		summarizeBy: none
+		sourceColumn: active_energy_kcal
+
+		annotation SummarizationSetBy = Automatic
+
+	column training_load
+		dataType: double
+		formatString: #,0.0
+		sourceProviderType: float
+		lineageTag: cf377000-8ca1-4cbb-af39-5bf7fb40182d
+		sourceLineageTag: training_load
+		summarizeBy: none
+		sourceColumn: training_load
+
+		annotation SummarizationSetBy = Automatic
+
+	column sports
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: d8186901-323c-4bd2-8df0-158aacf29516
+		sourceLineageTag: sports
+		summarizeBy: none
+		sourceColumn: sports
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_active_day
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: 194c0086-3b78-497a-9730-7f8726301a49
+		sourceLineageTag: is_active_day
+		summarizeBy: none
+		sourceColumn: is_active_day
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_rest_day
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: 4a8403ec-d737-4710-9688-f4ff2db9b4b7
+		sourceLineageTag: is_rest_day
+		summarizeBy: none
+		sourceColumn: is_rest_day
+
+		annotation SummarizationSetBy = Automatic
+
+	column active_minutes_7d
+		dataType: double
+		formatString: #,0.0
+		sourceProviderType: float
+		lineageTag: d87ddf48-4ed6-48ff-a6c4-adcdf481bae2
+		sourceLineageTag: active_minutes_7d
+		summarizeBy: none
+		sourceColumn: active_minutes_7d
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactDailyActivity = entity
+		mode: directLake
+		source
+			entityName: FactDailyActivity
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table

@@ -1,0 +1,314 @@
+{
+  "properties": {
+    "description": "Multi-source refresh: reads enabled sources from Bronze meta.source_registry, runs each source's Bronze ingestion and Silver transformation, rebuilds Gold and the workout plan, runs data quality checks, refreshes the Power BI semantic model and fails the run if a data quality check failed. One run at a time (concurrency 1).",
+    "activities": [
+      {
+        "name": "Get_Enabled_Sources",
+        "type": "TridentNotebook",
+        "dependsOn": [],
+        "policy": {
+          "timeout": "0.00:30:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 120,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "notebookId": "00000000-0000-4000-8000-000000000107",
+          "workspaceId": "00000000-0000-4000-8000-000000000001",
+          "parameters": {
+            "sources_filter": {
+              "value": {
+                "value": "@pipeline().parameters.sources_filter",
+                "type": "Expression"
+              },
+              "type": "string"
+            }
+          }
+        }
+      },
+      {
+        "name": "Build_Silver_Reference_Data",
+        "type": "TridentNotebook",
+        "dependsOn": [
+          {
+            "activity": "Get_Enabled_Sources",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.00:30:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 120,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "notebookId": "00000000-0000-4000-8000-000000000106",
+          "workspaceId": "00000000-0000-4000-8000-000000000001"
+        }
+      },
+      {
+        "name": "ForEach_Source",
+        "type": "ForEach",
+        "dependsOn": [
+          {
+            "activity": "Build_Silver_Reference_Data",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "typeProperties": {
+          "items": {
+            "value": "@json(activity('Get_Enabled_Sources').output.result.exitValue)",
+            "type": "Expression"
+          },
+          "isSequential": false,
+          "batchCount": 4,
+          "activities": [
+            {
+              "name": "Bronze_Ingest",
+              "type": "TridentNotebook",
+              "dependsOn": [],
+              "policy": {
+                "timeout": "0.02:00:00",
+                "retry": 2,
+                "retryIntervalInSeconds": 300,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "typeProperties": {
+                "notebookId": {
+                  "value": "@item().ingest_notebook_id",
+                  "type": "Expression"
+                },
+                "workspaceId": {
+                  "value": "@item().workspace_id",
+                  "type": "Expression"
+                }
+              }
+            },
+            {
+              "name": "Silver_Transform",
+              "type": "TridentNotebook",
+              "dependsOn": [
+                {
+                  "activity": "Bronze_Ingest",
+                  "dependencyConditions": [
+                    "Succeeded"
+                  ]
+                }
+              ],
+              "policy": {
+                "timeout": "0.01:00:00",
+                "retry": 1,
+                "retryIntervalInSeconds": 120,
+                "secureOutput": false,
+                "secureInput": false
+              },
+              "typeProperties": {
+                "notebookId": {
+                  "value": "@item().silver_notebook_id",
+                  "type": "Expression"
+                },
+                "workspaceId": {
+                  "value": "@item().workspace_id",
+                  "type": "Expression"
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name": "Build_Gold_Model",
+        "type": "TridentNotebook",
+        "dependsOn": [
+          {
+            "activity": "ForEach_Source",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.01:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 120,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "notebookId": "00000000-0000-4000-8000-00000000010c",
+          "workspaceId": "00000000-0000-4000-8000-000000000001"
+        }
+      },
+      {
+        "name": "Build_Longevity_Metrics",
+        "type": "TridentNotebook",
+        "dependsOn": [
+          {
+            "activity": "Build_Gold_Model",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.01:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 120,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "notebookId": "00000000-0000-4000-8000-000000000104",
+          "workspaceId": "00000000-0000-4000-8000-000000000001"
+        },
+        "description": "Longevity Gold tables: FactDailyActivity and FactBiometric (VO2max, FTP W/kg, steps, WHO minutes)."
+      },
+      {
+        "name": "Generate_Workout_Plan",
+        "type": "TridentNotebook",
+        "dependsOn": [
+          {
+            "activity": "Build_Gold_Model",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.00:30:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 120,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "notebookId": "00000000-0000-4000-8000-00000000010b",
+          "workspaceId": "00000000-0000-4000-8000-000000000001"
+        }
+      },
+      {
+        "name": "Data_Quality_Checks",
+        "type": "TridentNotebook",
+        "dependsOn": [
+          {
+            "activity": "Build_Longevity_Metrics",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "Generate_Workout_Plan",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.00:30:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 120,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "notebookId": "00000000-0000-4000-8000-000000000103",
+          "workspaceId": "00000000-0000-4000-8000-000000000001"
+        },
+        "description": "Freshness, Bronze -> Silver -> Gold reconciliation, integrity, validity and security checks; writes DataStatus for the report."
+      },
+      {
+        "name": "Refresh_Semantic_Models",
+        "type": "TridentNotebook",
+        "dependsOn": [
+          {
+            "activity": "Data_Quality_Checks",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ],
+        "policy": {
+          "timeout": "0.00:45:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 120,
+          "secureOutput": false,
+          "secureInput": false
+        },
+        "typeProperties": {
+          "notebookId": "00000000-0000-4000-8000-000000000105",
+          "workspaceId": "00000000-0000-4000-8000-000000000001"
+        }
+      },
+      {
+        "name": "Fail_If_Any_Source_Failed",
+        "type": "Fail",
+        "dependsOn": [
+          {
+            "activity": "ForEach_Source",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ],
+        "typeProperties": {
+          "message": "At least one source failed during Bronze ingestion or Silver transformation. Gold was rebuilt from the sources that succeeded; check the ForEach_Source activity runs.",
+          "errorCode": "SourceRefreshFailed"
+        }
+      },
+      {
+        "name": "If_Data_Quality_Failed",
+        "type": "IfCondition",
+        "dependsOn": [
+          {
+            "activity": "Data_Quality_Checks",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "Refresh_Semantic_Models",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ],
+        "typeProperties": {
+          "expression": {
+            "value": "@equals(json(activity('Data_Quality_Checks').output.result.exitValue).status, 'failed')",
+            "type": "Expression"
+          },
+          "ifTrueActivities": [
+            {
+              "name": "Fail_Data_Quality",
+              "type": "Fail",
+              "dependsOn": [],
+              "typeProperties": {
+                "message": {
+                  "value": "@concat('Data quality checks failed: ', string(json(activity('Data_Quality_Checks').output.result.exitValue).failed_checks), '. See the DataQualityCheck table in the Strava_Gold lakehouse.')",
+                  "type": "Expression"
+                },
+                "errorCode": "DataQualityFailed"
+              }
+            }
+          ],
+          "ifFalseActivities": []
+        }
+      }
+    ],
+    "parameters": {
+      "sources_filter": {
+        "type": "string",
+        "defaultValue": ""
+      }
+    },
+    "annotations": [],
+    "concurrency": 1
+  }
+}

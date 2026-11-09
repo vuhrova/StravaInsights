@@ -1,0 +1,764 @@
+table activities
+	lineageTag: 143d95c6-7f4f-4909-aa91-733a49ff157e
+	sourceLineageTag: [dbo].[FactWorkout]
+
+	measure 'Total Workouts' = COUNTROWS(activities)
+		formatString: 0
+		lineageTag: af52bc2e-8e46-44fa-86ff-4dc82d7f9355
+
+		changedProperty = Name
+
+	/// Total distance / total moving time.
+	measure 'Avg Speed kmh' = DIVIDE([Total Distance km], [Total Hours])
+		displayFolder: Activities
+		formatString: 0.0
+		lineageTag: c7b657c9-4e38-4e6d-ac94-434589bd22ac
+
+	/// Average power of rides with power, weighted by moving time.
+	measure 'Avg Watts' =
+			VAR _rows = FILTER(activities, NOT ISBLANK(activities[average_watts]) && activities[average_watts] > 0)
+			RETURN DIVIDE(SUMX(_rows, activities[average_watts] * activities[duration_minutes]), SUMX(_rows, activities[duration_minutes]))
+		displayFolder: Activities
+		formatString: 0
+		lineageTag: 276bf0ba-13de-45c1-aad1-c1f333b95526
+
+	/// Average heart rate, weighted by moving time.
+	measure 'Avg Heart Rate' =
+			VAR _rows = FILTER(activities, NOT ISBLANK(activities[average_heartrate]) && activities[average_heartrate] > 0)
+			RETURN DIVIDE(SUMX(_rows, activities[average_heartrate] * activities[duration_minutes]), SUMX(_rows, activities[duration_minutes]))
+		displayFolder: Activities
+		formatString: 0
+		lineageTag: 29804abf-d7c2-4058-a990-e8f8cf825b44
+
+	measure 'Avg Temperature' = AVERAGE(activities[average_temp])
+		formatString: 0.0
+		lineageTag: 0a419878-71f6-49fc-b671-5e6b940d1f00
+
+		changedProperty = Name
+
+	measure 'Total Distance km' = SUM(activities[distance_km])
+		formatString: #,0
+		lineageTag: 6463c0f0-055b-47f3-a53c-ff47bc5e94a5
+
+		changedProperty = Name
+
+	measure 'Total Hours' = SUM(activities[duration_minutes]) / 60
+		formatString: #,0.0
+		lineageTag: 52b674af-fd5d-4370-9595-4936e4eb9c91
+
+		changedProperty = Name
+
+	measure 'Day of Week' = FORMAT(activities[start_date_local], "ddd")
+		lineageTag: a40bc1f4-82be-4148-b8cd-1795f57cfe7f
+
+		changedProperty = Name
+
+	measure 'Pace per km' =
+			VAR fam = SELECTEDVALUE(activities[activity_family_name])
+			VAR s = IF(fam IN {"Running", "Walking"}, ROUND(DIVIDE(SUM(activities[duration_minutes]), SUM(activities[distance_km])) * 60, 0))
+			RETURN IF(ISBLANK(s) || s = 0, BLANK(), FORMAT(INT(s / 60), "0") & ":" & FORMAT(MOD(s, 60), "00") & " /km")
+		lineageTag: 49a46fd6-4926-4959-b1f9-b32a7bd2009f
+
+	measure 'Moving Time' =
+			VAR m = ROUND(SUM(activities[duration_minutes]), 0)
+			RETURN IF(ISBLANK(m), BLANK(), FORMAT(INT(m / 60), "0") & "h " & FORMAT(MOD(m, 60), "00") & "m")
+		lineageTag: ed14a157-9a7f-4b38-8d26-9379ebe98f66
+
+	measure 'Max Speed kmh' = MAX(activities[max_speed]) * 3.6
+		formatString: 0.0
+		lineageTag: 8bd60822-98fc-466e-877b-8af01811d715
+
+	/// Average normalized power, weighted by moving time.
+	measure 'Avg Normalized Power' =
+			VAR _rows = FILTER(activities, NOT ISBLANK(activities[weighted_average_watts]) && activities[weighted_average_watts] > 0)
+			RETURN DIVIDE(SUMX(_rows, activities[weighted_average_watts] * activities[duration_minutes]), SUMX(_rows, activities[duration_minutes]))
+		formatString: 0
+		displayFolder: Activities
+		lineageTag: a2051a7c-6a6f-4974-a68e-8e098f0b2b87
+
+	measure 'Total Training Load' = SUM(activities[training_load_score])
+		formatString: #,0
+		lineageTag: b433ba30-288c-4562-be03-fec5e96ff187
+
+	measure 'Total Calories kcal' = SUM(activities[calories_kcal])
+		formatString: #,0
+		lineageTag: f3c2b1fa-8700-4275-a802-cae3f130cfe0
+
+	measure 'Activity Type' = SELECTEDVALUE(activities[activity_type_name], "Multiple")
+		lineageTag: 34c8bd7e-f012-400e-8e9c-77314cf9e8dd
+
+	measure 'Total Duration Minutes' = SUM(activities[duration_minutes])
+		formatString: #,0
+		displayFolder: Activities
+		lineageTag: 753c915c-a4ea-4b98-b01c-54969d170b6f
+
+	measure 'Total Elevation Gain m' = SUM(activities[total_elevation_gain])
+		formatString: #,0
+		displayFolder: Activities
+		lineageTag: 023dcd8d-0ece-48f1-9d7d-49008f5a7991
+
+	measure 'Max Power' = MAX(activities[max_watts])
+		formatString: 0
+		displayFolder: Activities
+		lineageTag: 27bcfcfc-35df-49b4-9505-cd8012fa4e0c
+
+	measure 'Max Heart Rate' = MAX(activities[max_heartrate])
+		formatString: 0
+		displayFolder: Activities
+		lineageTag: 766e2c17-fffe-4028-9a94-3048e756c8fb
+
+	measure 'Avg Cadence' =
+			VAR _rows = FILTER(activities, NOT ISBLANK(activities[average_cadence]) && activities[average_cadence] > 0)
+			RETURN DIVIDE(SUMX(_rows, activities[average_cadence] * activities[duration_minutes]), SUMX(_rows, activities[duration_minutes]))
+		formatString: 0
+		displayFolder: Activities
+		lineageTag: 0a7430ec-6bb6-4f7a-a76f-6d2f0180ff4f
+
+	/// Steps per minute (Strava reports running cadence per leg), weighted by moving time.
+	measure 'Avg Running Cadence spm' =
+			VAR _rows = FILTER(activities, NOT ISBLANK(activities[average_cadence]) && activities[average_cadence] > 0)
+			RETURN DIVIDE(SUMX(_rows, activities[average_cadence] * activities[duration_minutes]), SUMX(_rows, activities[duration_minutes])) * 2
+		formatString: 0
+		displayFolder: Activities
+		lineageTag: 88fa520b-c6e2-489a-b61b-befb948cac8d
+
+	measure 'Avg Pace min per km' = DIVIDE(SUM(activities[duration_minutes]), SUM(activities[distance_km]))
+		formatString: 0.00
+		displayFolder: Activities
+		lineageTag: 31d93d78-2704-493a-b612-5030f72e6ed1
+
+	measure 'Longest Distance km' = MAX(activities[distance_km])
+		formatString: 0.0
+		displayFolder: Activities
+		lineageTag: 09e5a456-64d9-47cc-88fd-df185c9ea2ff
+
+	measure 'Workouts per Week' =
+			VAR _days = DATEDIFF(MIN(DimDate[Date]), MIN(MAX(DimDate[Date]), TODAY()), DAY) + 1
+			RETURN DIVIDE([Total Workouts], _days / 7)
+		formatString: 0.0
+		displayFolder: Activities
+		lineageTag: be7846c8-c22a-4897-8f06-dff0d5122aac
+
+	measure 'Distance per Week km' =
+			VAR _days = DATEDIFF(MIN(DimDate[Date]), MIN(MAX(DimDate[Date]), TODAY()), DAY) + 1
+			RETURN DIVIDE([Total Distance km], _days / 7)
+		displayFolder: Activities
+		formatString: #,0.0
+		lineageTag: 8c3eb599-e115-41ee-a012-cbe56edab488
+
+	measure 'Hours per Week' =
+			VAR _days = DATEDIFF(MIN(DimDate[Date]), MIN(MAX(DimDate[Date]), TODAY()), DAY) + 1
+			RETURN DIVIDE([Total Hours], _days / 7)
+		formatString: 0.0
+		displayFolder: Activities
+		lineageTag: 4d610dfb-2077-49ee-8f6a-eae921313ac7
+
+	measure 'Best Effort Time' =
+			VAR s = MIN(activity_best_efforts[duration_s])
+			RETURN IF(ISBLANK(s), BLANK(),
+			    IF(s >= 3600, FORMAT(INT(s / 3600), "0") & ":" & FORMAT(INT(MOD(s, 3600) / 60), "00") & ":" & FORMAT(MOD(s, 60), "00"),
+			        FORMAT(INT(s / 60), "0") & ":" & FORMAT(MOD(s, 60), "00")))
+		displayFolder: Activities
+		lineageTag: 3755d95a-8608-42f0-8bb3-eeabfc6dfd64
+
+	measure 'Best 5K' = CALCULATE([Best Effort Time], activity_best_efforts[effort_type] = "Distance", activity_best_efforts[effort_name] IN {"5k", "5K"})
+		displayFolder: Activities
+		lineageTag: ba0cfb5d-d849-4ded-abd7-4f070dc7e06d
+
+	measure 'Best 10K' = CALCULATE([Best Effort Time], activity_best_efforts[effort_type] = "Distance", activity_best_efforts[effort_name] IN {"10k", "10K"})
+		displayFolder: Activities
+		lineageTag: 0dbbac0c-110c-49c3-a5f8-67904a9e2a80
+
+	measure 'Best 20 min Power W' = CALCULATE(MAX(activity_best_efforts[avg_power_w]), activity_best_efforts[effort_type] = "Power", activity_best_efforts[effort_name] = "20 min", KEEPFILTERS(activities[activity_family_name] = "Cycling"))
+		formatString: 0
+		displayFolder: Activities
+		lineageTag: 1868a95c-b297-4d21-830c-3532026e03b7
+
+	measure 'Best 5 min Power W' = CALCULATE(MAX(activity_best_efforts[avg_power_w]), activity_best_efforts[effort_type] = "Power", activity_best_efforts[effort_name] = "5 min", KEEPFILTERS(activities[activity_family_name] = "Cycling"))
+		formatString: 0
+		displayFolder: Activities
+		lineageTag: 4116bb6d-25b3-425b-a867-dbef93881c80
+
+	/// 95% of the best 20-minute power in the current filter context (e.g. per month).
+	measure 'FTP Estimate W' = ROUND(0.95 * [Best 20 min Power W], 0)
+		formatString: 0
+		displayFolder: Activities
+		lineageTag: 62d7fbe7-a92d-4dc2-a55a-8267e5f6c9f0
+
+	/// Best average cycling power in the current context (use with activity_best_efforts[effort_name] for a power curve).
+	measure 'Best Power in Period W' = CALCULATE(MAX(activity_best_efforts[avg_power_w]), activity_best_efforts[effort_type] = "Power", KEEPFILTERS(activities[activity_family_name] = "Cycling"))
+		formatString: 0
+		displayFolder: Activities
+		lineageTag: aff1c6c9-e163-45aa-897b-fa32c867fd00
+
+	/// Best Power in Period W in the period just before the selected one (same number of days).
+	measure 'Best Power Prev Period W' =
+			VAR _start = MIN(DimDate[Date])
+			VAR _end = MIN(MAX(DimDate[Date]), TODAY())
+			VAR _days = INT(_end - _start) + 1
+			RETURN
+			    IF(_start > TODAY(), BLANK(),
+			    CALCULATE(
+			        [Best Power in Period W],
+			        REMOVEFILTERS(DimPeriod), REMOVEFILTERS(DimDate),
+			        DimDate[Date] >= _start - _days, DimDate[Date] < _start
+			    ))
+		formatString: 0
+		displayFolder: Activities
+		lineageTag: bb479007-e23b-4d11-9fd0-479a3e16ae24
+
+	measure 'FTP Prev Period W' =
+			VAR _start = MIN(DimDate[Date])
+			VAR _end = MIN(MAX(DimDate[Date]), TODAY())
+			VAR _days = INT(_end - _start) + 1
+			RETURN
+			    IF(_start > TODAY(), BLANK(),
+			    CALCULATE(
+			        [FTP Estimate W],
+			        REMOVEFILTERS(DimPeriod), REMOVEFILTERS(DimDate),
+			        DimDate[Date] >= _start - _days, DimDate[Date] < _start
+			    ))
+		formatString: 0
+		displayFolder: Activities
+		lineageTag: 6cff7e98-880a-4850-9acf-736debd1c8f5
+
+	/// Change of the FTP estimate against the period just before the selected one.
+	measure 'FTP Change vs Prev Period' = DIVIDE([FTP Estimate W] - [FTP Prev Period W], [FTP Prev Period W])
+		formatString: +0%;-0%;0%
+		displayFolder: Activities
+		lineageTag: a59a1333-f780-4f6a-9890-10952331f09a
+
+	measure 'Best Effort Time Prev Period' =
+			VAR _start = MIN(DimDate[Date])
+			VAR _end = MIN(MAX(DimDate[Date]), TODAY())
+			VAR _days = INT(_end - _start) + 1
+			RETURN
+			    IF(_start > TODAY(), BLANK(),
+			    CALCULATE(
+			        [Best Effort Time],
+			        REMOVEFILTERS(DimPeriod), REMOVEFILTERS(DimDate),
+			        DimDate[Date] >= _start - _days, DimDate[Date] < _start
+			    ))
+		displayFolder: Activities
+		lineageTag: 3396ebbd-4255-4c4e-b9fc-ea17b958d482
+
+	column id
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: af2bc28a-14b3-49fa-b1cc-dcc7c34b625b
+		sourceLineageTag: id
+		summarizeBy: sum
+		sourceColumn: id
+
+		annotation SummarizationSetBy = Automatic
+
+	column name
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 1d19d745-8b2a-4ab9-ab1c-e92b838b51b6
+		sourceLineageTag: name
+		summarizeBy: none
+		sourceColumn: name
+
+		annotation SummarizationSetBy = Automatic
+
+	column type
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 97267d79-1649-42a7-beaa-4dc6de1cf850
+		sourceLineageTag: type
+		summarizeBy: none
+		sourceColumn: type
+
+		annotation SummarizationSetBy = Automatic
+
+	column sport_type
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: f4c1eece-edd2-4f6e-b675-8893019817ff
+		sourceLineageTag: sport_type
+		summarizeBy: none
+		sourceColumn: sport_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column start_date_local
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 6664e210-aa5b-4737-bb12-3430e76e1e15
+		sourceLineageTag: start_date_local
+		summarizeBy: none
+		sourceColumn: start_date_local
+
+		annotation SummarizationSetBy = Automatic
+
+	column distance
+		dataType: double
+		sourceProviderType: float
+		lineageTag: f357af1c-61d8-44fa-a07d-f7b500108151
+		sourceLineageTag: distance
+		summarizeBy: sum
+		sourceColumn: distance
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column moving_time
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 0274b0c8-3bd2-4369-8923-7f428ef2f781
+		sourceLineageTag: moving_time
+		summarizeBy: sum
+		sourceColumn: moving_time
+
+		annotation SummarizationSetBy = Automatic
+
+	column elapsed_time
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 623becc6-3c70-4a4a-bc2d-3ba54bc8754e
+		sourceLineageTag: elapsed_time
+		summarizeBy: sum
+		sourceColumn: elapsed_time
+
+		annotation SummarizationSetBy = Automatic
+
+	column average_speed
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 72b88b47-d0f5-4423-af5a-55f54d4ba73f
+		sourceLineageTag: average_speed
+		summarizeBy: sum
+		sourceColumn: average_speed
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column max_speed
+		dataType: double
+		sourceProviderType: float
+		lineageTag: a51fb29e-6e0f-418f-b46d-18d3e950dccf
+		sourceLineageTag: max_speed
+		summarizeBy: sum
+		sourceColumn: max_speed
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column average_watts
+		dataType: double
+		sourceProviderType: float
+		lineageTag: f200f032-d98e-483f-9a2e-2e72e98b4b6c
+		sourceLineageTag: average_watts
+		summarizeBy: sum
+		sourceColumn: average_watts
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column max_watts
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 40077d76-ef62-4b4e-aec7-2d0657896bb8
+		sourceLineageTag: max_watts
+		summarizeBy: sum
+		sourceColumn: max_watts
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column weighted_average_watts
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 2a0f2df4-3b5a-470b-a408-a89cbe9c1511
+		sourceLineageTag: weighted_average_watts
+		summarizeBy: sum
+		sourceColumn: weighted_average_watts
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column average_heartrate
+		dataType: double
+		sourceProviderType: float
+		lineageTag: ac1e8106-3fa2-4366-883d-4833177ee837
+		sourceLineageTag: average_heartrate
+		summarizeBy: sum
+		sourceColumn: average_heartrate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column max_heartrate
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 2f8a5d7e-266c-4edd-8ae7-fbc6eccf4d5c
+		sourceLineageTag: max_heartrate
+		summarizeBy: sum
+		sourceColumn: max_heartrate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column average_temp
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 35bbf1ee-dff0-4d7b-8879-49279e523d83
+		sourceLineageTag: average_temp
+		summarizeBy: sum
+		sourceColumn: average_temp
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_elevation_gain
+		dataType: double
+		sourceProviderType: float
+		lineageTag: b4c6b3e3-caf2-4ba8-90f9-edc0530cad94
+		sourceLineageTag: total_elevation_gain
+		summarizeBy: sum
+		sourceColumn: total_elevation_gain
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column elev_high
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 484a6073-e9bd-4438-ab52-02699d9671c2
+		sourceLineageTag: elev_high
+		summarizeBy: sum
+		sourceColumn: elev_high
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column elev_low
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 437fcfc5-c81a-4a1c-a07f-e42377197543
+		sourceLineageTag: elev_low
+		summarizeBy: sum
+		sourceColumn: elev_low
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column kilojoules
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 24e1094e-561a-4578-8ecf-c8702a1378e7
+		sourceLineageTag: kilojoules
+		summarizeBy: sum
+		sourceColumn: kilojoules
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column suffer_score
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 56d8cb5a-e3ed-4e98-83c5-8ba94d2426f7
+		sourceLineageTag: suffer_score
+		summarizeBy: sum
+		sourceColumn: suffer_score
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column average_cadence
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 24e6b831-56ec-40b7-bf77-aaabbc8fbdbe
+		sourceLineageTag: average_cadence
+		summarizeBy: sum
+		sourceColumn: average_cadence
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column trainer
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: 74657e65-48ef-497e-992c-805f1a0e2e09
+		sourceLineageTag: trainer
+		summarizeBy: none
+		sourceColumn: trainer
+
+		annotation SummarizationSetBy = Automatic
+
+	column commute
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		sourceProviderType: bit
+		lineageTag: 87008ac6-0095-469c-a1d6-9bffa1dcb1b2
+		sourceLineageTag: commute
+		summarizeBy: none
+		sourceColumn: commute
+
+		annotation SummarizationSetBy = Automatic
+
+	column distance_km
+		dataType: double
+		sourceProviderType: float
+		formatString: #,0.0
+		lineageTag: c9d0daa9-47c6-49cd-ac9c-eb92ca6569a0
+		sourceLineageTag: distance_km
+		summarizeBy: sum
+		sourceColumn: distance_km
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_speed_kmh
+		dataType: double
+		sourceProviderType: float
+		lineageTag: b97a61ff-c37c-465d-a983-80c57217c2b5
+		sourceLineageTag: avg_speed_kmh
+		summarizeBy: sum
+		sourceColumn: avg_speed_kmh
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column duration_minutes
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 580af3d6-bb62-40d2-b2e6-c49d760bf79f
+		sourceLineageTag: duration_minutes
+		summarizeBy: sum
+		sourceColumn: duration_minutes
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column source_system
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: fa2924b5-8664-40d5-a3ff-50403effc91d
+		sourceLineageTag: source_system
+		summarizeBy: none
+		sourceColumn: source_system
+
+		annotation SummarizationSetBy = Automatic
+
+	column workout_key
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: ae582ca9-a946-4d2d-8155-45c5a435f445
+		sourceLineageTag: workout_key
+		summarizeBy: none
+		sourceColumn: workout_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column activity_family_name
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 9813e530-9ccb-4598-8ac7-867a4ef0bee1
+		sourceLineageTag: activity_family_name
+		summarizeBy: none
+		sourceColumn: activity_family_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column activity_type_name
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 6defd24d-f45f-47e8-b1a5-d1dd02b9119b
+		sourceLineageTag: activity_type_name
+		summarizeBy: none
+		sourceColumn: activity_type_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column activity_label
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 3c521242-1d8d-4395-be25-81f7dc2e192e
+		sourceLineageTag: activity_label
+		summarizeBy: none
+		sourceColumn: activity_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column start_time_local
+		dataType: dateTime
+		sourceProviderType: datetime2
+		formatString: ddd d MMM yyyy
+		lineageTag: 73c5dffb-39d6-4ae8-94a7-0c49e0b7a014
+		sourceLineageTag: start_time_local
+		summarizeBy: none
+		sourceColumn: start_time_local
+
+		annotation SummarizationSetBy = Automatic
+
+	column start_hour
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 30747380-9448-4537-9bf2-332cb64b9e09
+		sourceLineageTag: start_hour
+		summarizeBy: none
+		sourceColumn: start_hour
+
+		annotation SummarizationSetBy = Automatic
+
+	column duration_hours
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: float
+		lineageTag: cbfb3757-ab14-4e68-88b3-5c91d4536716
+		sourceLineageTag: duration_hours
+		summarizeBy: none
+		sourceColumn: duration_hours
+
+		annotation SummarizationSetBy = Automatic
+
+	column calories_kcal
+		dataType: double
+		formatString: #,0
+		sourceProviderType: float
+		lineageTag: 951bf5c1-d522-4ab9-80eb-c7b32259a8a8
+		sourceLineageTag: calories_kcal
+		summarizeBy: none
+		sourceColumn: calories_kcal
+
+		annotation SummarizationSetBy = Automatic
+
+	column training_load_score
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 1fec57f4-ac8a-4a67-a03d-34e742655030
+		sourceLineageTag: training_load_score
+		summarizeBy: none
+		sourceColumn: training_load_score
+
+		annotation SummarizationSetBy = Automatic
+
+	column perceived_exertion
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 7bc7f8b7-fc67-4a58-aacc-7400fa2f3366
+		sourceLineageTag: perceived_exertion
+		summarizeBy: none
+		sourceColumn: perceived_exertion
+
+		annotation SummarizationSetBy = Automatic
+
+	column device_name
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 557921b0-2037-4fd4-a391-256aba246f00
+		sourceLineageTag: device_name
+		summarizeBy: none
+		sourceColumn: device_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column workout_intent
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: edc4fd11-41e0-4d02-8566-d3cbd474d4e3
+		sourceLineageTag: workout_intent
+		summarizeBy: none
+		sourceColumn: workout_intent
+
+		annotation SummarizationSetBy = Automatic
+
+	column pace_min_per_km
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: float
+		lineageTag: fcd962d4-5532-43f6-8ea7-0641a15c136a
+		sourceLineageTag: pace_min_per_km
+		summarizeBy: none
+		sourceColumn: pace_min_per_km
+
+		annotation SummarizationSetBy = Automatic
+
+	column activity_date
+		dataType: dateTime
+		formatString: Short Date
+		sourceProviderType: date
+		lineageTag: c742e13a-09fa-455d-87e2-e64aedfbb74f
+		sourceLineageTag: activity_date
+		summarizeBy: none
+		sourceColumn: activity_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column environment
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 8d8d6ce2-cc68-4945-a52f-84587c9b9e95
+		sourceLineageTag: environment
+		summarizeBy: none
+		sourceColumn: environment
+
+		annotation SummarizationSetBy = Automatic
+
+	column intensity_zone
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: cc60acdc-cfe6-417c-a22a-e385e0123cf8
+		sourceLineageTag: intensity_zone
+		summarizeBy: none
+		sourceColumn: intensity_zone
+
+		annotation SummarizationSetBy = Automatic
+
+	column distance_category
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: e9f32349-2702-4c40-9d52-61e785a9f35b
+		sourceLineageTag: distance_category
+		summarizeBy: none
+		sourceColumn: distance_category
+		sortByColumn: distance_category_sort
+
+		annotation SummarizationSetBy = Automatic
+
+	column distance_category_sort
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 1cb09889-8f2d-4115-9ca1-489929817096
+		sourceLineageTag: distance_category_sort
+		summarizeBy: none
+		sourceColumn: distance_category_sort
+
+		annotation SummarizationSetBy = Automatic
+
+	partition activities = entity
+		mode: directLake
+		source
+			entityName: FactWorkout
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

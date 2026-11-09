@@ -1,0 +1,1014 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/dataAgent/definition/dataSource/1.0.0/schema.json",
+  "artifactId": "00000000-0000-4000-8000-000000000031",
+  "workspaceId": "00000000-0000-4000-8000-000000000001",
+  "dataSourceInstructions": "Use only the selected tables from the Strava_Gold lakehouse. These tables are curated outputs of the medallion architecture and are safe for report and agent consumption. Do not use bronze raw tables, or silver quality/audit tables. For longevity questions (daily active minutes, steps, WHO guideline minutes, Zone 2, VO2max, FTP per kg) use FactDailyActivity (one row per day, rest days included - average over days, not workouts) and FactBiometric (filter metric_code; prefer is_estimate = false when present, otherwise use the latest estimate).",
+  "displayName": "Strava_Gold",
+  "type": "lakehouse_tables",
+  "userDescription": "Curated gold-layer fitness, training, workout-plan, and nutrition tables from StravaInsights.",
+  "metadata": {
+    "architecture": "medallion",
+    "selectedLayer": "gold"
+  },
+  "elements": [
+    {
+      "id": "2d4a8ec2-d5d3-4e46-a0fe-23c2f8a0e6d4",
+      "is_selected": false,
+      "display_name": "Schemas",
+      "type": "schema_grouping",
+      "description": "Lakehouse schemas grouped by medallion layer.",
+      "children": [
+        {
+          "id": "b710ce3b-1db9-4a4f-83df-c843a3f81540",
+          "is_selected": true,
+          "display_name": "dbo",
+          "type": "lakehouse_tables.schema",
+          "description": "Curated business-ready Gold lakehouse tables for Power BI reports and the StravaInsights data agent.",
+          "children": [
+            {
+              "id": "e37ab693-5cf9-4817-ad4e-c4e2a3915556",
+              "is_selected": true,
+              "display_name": "Tables",
+              "type": "table_grouping",
+              "description": "Selected curated gold tables.",
+              "children": [
+                {
+                  "id": "297eb74f-e58d-4a69-8029-9f70737f1763",
+                  "is_selected": true,
+                  "display_name": "FactWorkout",
+                  "type": "lakehouse_tables.table",
+                  "description": "Curated workout-level activity facts with report-compatible columns plus source and intensity context.",
+                  "children": [
+                    {
+                      "id": "f53ac8b3-c3e4-40b2-bd7e-6561b987c001",
+                      "is_selected": true,
+                      "display_name": "id",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "bigint",
+                      "description": "Source activity identifier.",
+                      "children": []
+                    },
+                    {
+                      "id": "892ea046-e88b-43e0-9ffc-a6565e61b3a8",
+                      "is_selected": true,
+                      "display_name": "name",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Activity name from the source platform.",
+                      "children": []
+                    },
+                    {
+                      "id": "75cf4d42-dfde-4a51-a6a2-4db5d3415905",
+                      "is_selected": true,
+                      "display_name": "type",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Source activity type such as Ride, Run, Swim, or Workout.",
+                      "children": []
+                    },
+                    {
+                      "id": "6596bd80-d4e4-4ad4-b19a-934517d74d31",
+                      "is_selected": true,
+                      "display_name": "start_date_local",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Local activity start timestamp.",
+                      "children": []
+                    },
+                    {
+                      "id": "d9d00e38-2cb1-4eec-b99d-4a564e949e40",
+                      "is_selected": true,
+                      "display_name": "distance_km",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Distance in kilometers.",
+                      "children": []
+                    },
+                    {
+                      "id": "c8e70487-6070-4ed0-8c3d-79562f05cfdf",
+                      "is_selected": true,
+                      "display_name": "duration_minutes",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Moving duration in minutes.",
+                      "children": []
+                    },
+                    {
+                      "id": "89dafec0-aef8-4ad2-b9d2-b2da4091b8da",
+                      "is_selected": true,
+                      "display_name": "average_heartrate",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Average heart rate in beats per minute when available.",
+                      "children": []
+                    },
+                    {
+                      "id": "c7e291c2-fb9c-4459-b1f9-705c8deee6a8",
+                      "is_selected": true,
+                      "display_name": "average_watts",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Average power in watts when available.",
+                      "children": []
+                    },
+                    {
+                      "id": "d4b6a0ec-fc77-4b8f-84f9-2fae1bb31676",
+                      "is_selected": true,
+                      "display_name": "kilojoules",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Estimated work/energy expenditure from the activity.",
+                      "children": []
+                    },
+                    {
+                      "id": "dfa61df4-c3d5-4cf8-a2c7-44d0b1d03f26",
+                      "is_selected": true,
+                      "display_name": "suffer_score",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Training load proxy from Strava when available.",
+                      "children": []
+                    },
+                    {
+                      "id": "a409e54e-1877-4a44-96da-9d1de3e2f715",
+                      "is_selected": true,
+                      "display_name": "intensity_zone",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Derived intensity zone from heart-rate ratio.",
+                      "children": []
+                    },
+                    {
+                      "id": "fc6e2a03-e4bc-46b6-84c2-d5d6292c0962",
+                      "is_selected": true,
+                      "display_name": "optimal_carbs_g",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Estimated carbohydrate target for the activity.",
+                      "children": []
+                    },
+                    {
+                      "id": "a1bb51da-b999-42b4-aee6-80dbf8713d91",
+                      "is_selected": true,
+                      "display_name": "source_system",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Source system that recorded the workout (e.g. strava, garmin_connect, apple_health).",
+                      "children": []
+                    },
+                    {
+                      "id": "549ac3c9-ea6a-47ad-ba08-2384f33e51ee",
+                      "is_selected": true,
+                      "display_name": "source_system_key",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Key to DimSourceSystem.source_system_key.",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "14b9e6fe-d050-4cde-a25d-67fdbb3b54cd",
+                  "is_selected": true,
+                  "display_name": "FactTrainingWeek",
+                  "type": "lakehouse_tables.table",
+                  "description": "Weekly training load, volume, readiness, intensity mix, and fueling aggregates.",
+                  "children": [
+                    {
+                      "id": "a7d528d9-6321-4275-b1fe-1558975634ad",
+                      "is_selected": true,
+                      "display_name": "week_start",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "date",
+                      "description": "Start date of the training week.",
+                      "children": []
+                    },
+                    {
+                      "id": "de0fcf4c-b3c7-49be-ae5d-4f634635884f",
+                      "is_selected": true,
+                      "display_name": "workouts",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "bigint",
+                      "description": "Number of workouts in the week.",
+                      "children": []
+                    },
+                    {
+                      "id": "122808c9-d0de-44ee-a81e-f8525280abd7",
+                      "is_selected": true,
+                      "display_name": "training_hours",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Total weekly training hours.",
+                      "children": []
+                    },
+                    {
+                      "id": "caf52e7e-1197-4820-a297-6725e54835c5",
+                      "is_selected": true,
+                      "display_name": "distance_km",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Total weekly distance in kilometers.",
+                      "children": []
+                    },
+                    {
+                      "id": "d1f875af-4a16-4b37-a9e4-c28e1dfe4b58",
+                      "is_selected": true,
+                      "display_name": "training_load",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Weekly training-load proxy.",
+                      "children": []
+                    },
+                    {
+                      "id": "cf81955d-cb90-4244-a65d-fc6e33d7ff83",
+                      "is_selected": true,
+                      "display_name": "load_4w_avg",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Rolling four-week average training load.",
+                      "children": []
+                    },
+                    {
+                      "id": "576c51e6-0084-4fbd-92c4-d075d28a8581",
+                      "is_selected": true,
+                      "display_name": "load_change_pct",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Week-over-week load change percentage.",
+                      "children": []
+                    },
+                    {
+                      "id": "850215b7-ecb3-4ed8-9241-f47aa3d797af",
+                      "is_selected": true,
+                      "display_name": "readiness_flag",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Training readiness signal such as Steady, Ramp too fast, or Recovery/down week.",
+                      "children": []
+                    },
+                    {
+                      "id": "1aa663a8-db8c-44c4-912e-4f05ad59c6ce",
+                      "is_selected": true,
+                      "display_name": "easy_hours",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Weekly easy/endurance hours.",
+                      "children": []
+                    },
+                    {
+                      "id": "9480118c-1eb4-4d87-90e9-cbb692a253ea",
+                      "is_selected": true,
+                      "display_name": "tempo_hours",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Weekly tempo hours.",
+                      "children": []
+                    },
+                    {
+                      "id": "5a58f8ee-adf4-43ef-badf-99067c875e15",
+                      "is_selected": true,
+                      "display_name": "hard_hours",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Weekly hard-intensity hours.",
+                      "children": []
+                    },
+                    {
+                      "id": "1182c321-9619-4205-836b-9deaa43796d5",
+                      "is_selected": true,
+                      "display_name": "source_systems",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Comma-separated source systems that contributed workouts.",
+                      "children": []
+                    },
+                    {
+                      "id": "59de2dac-6991-4cec-8642-75acbc6c8474",
+                      "is_selected": true,
+                      "display_name": "source_count",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "int",
+                      "description": "Number of distinct source systems that contributed workouts.",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "2b2b10d1-1817-4f2f-8b35-c6b8cb2fcb76",
+                  "is_selected": true,
+                  "display_name": "FactTrainingDay",
+                  "type": "lakehouse_tables.table",
+                  "description": "Daily workout volume, load, and fueling summary for short-term trend questions.",
+                  "children": [
+                    {
+                      "id": "c2df325f-053d-4ce0-bd23-b606875d7d5f",
+                      "is_selected": true,
+                      "display_name": "activity_date",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "date",
+                      "description": "Activity date.",
+                      "children": []
+                    },
+                    {
+                      "id": "33815210-4568-4b33-ad05-f56a709f192e",
+                      "is_selected": true,
+                      "display_name": "workouts",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "bigint",
+                      "description": "Number of workouts that day.",
+                      "children": []
+                    },
+                    {
+                      "id": "9e858bd0-96e8-4384-a6ab-91817f847ade",
+                      "is_selected": true,
+                      "display_name": "training_hours",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Daily training hours.",
+                      "children": []
+                    },
+                    {
+                      "id": "d503a1f3-8563-4245-810e-e40240a5dc1a",
+                      "is_selected": true,
+                      "display_name": "training_load",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Daily training-load proxy.",
+                      "children": []
+                    },
+                    {
+                      "id": "4f0e4a0f-7957-4467-8899-96029cb91b1e",
+                      "is_selected": true,
+                      "display_name": "optimal_carbs_g",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Daily estimated carbohydrate target.",
+                      "children": []
+                    },
+                    {
+                      "id": "068364d8-6a2b-4570-aceb-626ec7c96e6f",
+                      "is_selected": true,
+                      "display_name": "source_systems",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Comma-separated source systems that contributed workouts.",
+                      "children": []
+                    },
+                    {
+                      "id": "793a9c66-7ff6-4b5f-ae61-c5826c84306c",
+                      "is_selected": true,
+                      "display_name": "source_count",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "int",
+                      "description": "Number of distinct source systems that contributed workouts.",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "492d3ba0-b5b7-423f-8cf7-04f3b8c046a1",
+                  "is_selected": true,
+                  "display_name": "FactWorkoutPlan",
+                  "type": "lakehouse_tables.table",
+                  "description": "Generated seven-day workout plan derived from recent load, main sport, and readiness.",
+                  "children": [
+                    {
+                      "id": "d7601e16-d944-4a67-ad71-bf5287dc134b",
+                      "is_selected": true,
+                      "display_name": "plan_date",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "date",
+                      "description": "Planned workout date.",
+                      "children": []
+                    },
+                    {
+                      "id": "a54bca32-1d4e-48f0-92b3-8ac17d24f01c",
+                      "is_selected": true,
+                      "display_name": "workout_name",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Workout title.",
+                      "children": []
+                    },
+                    {
+                      "id": "0f1b0536-8168-4294-80b7-74c8f9ab1758",
+                      "is_selected": true,
+                      "display_name": "category",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Workout category such as Recovery, Endurance, Strength, Quality, Rest, Long endurance, or Tempo.",
+                      "children": []
+                    },
+                    {
+                      "id": "e31faf44-20bc-40f6-ad96-37b5b03864cd",
+                      "is_selected": true,
+                      "display_name": "duration_minutes",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "bigint",
+                      "description": "Planned workout duration in minutes.",
+                      "children": []
+                    },
+                    {
+                      "id": "11452f78-8a37-4748-8802-50ee7f309163",
+                      "is_selected": true,
+                      "display_name": "target",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Target effort or workout instructions.",
+                      "children": []
+                    },
+                    {
+                      "id": "c1be6e81-7cd4-4c6f-b362-481a4b2380e3",
+                      "is_selected": true,
+                      "display_name": "notes",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Additional workout notes.",
+                      "children": []
+                    },
+                    {
+                      "id": "a7d4f4f4-61c0-46d2-bb4c-b0c652d9f650",
+                      "is_selected": true,
+                      "display_name": "readiness_flag",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Readiness signal used to generate the plan.",
+                      "children": []
+                    },
+                    {
+                      "id": "e09af871-d68e-4fa7-9bb9-32d25196a299",
+                      "is_selected": true,
+                      "display_name": "week_focus",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Overall training focus for the generated week.",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "158013ec-d43d-4d62-a3d1-b0e10fbe74b8",
+                  "is_selected": true,
+                  "display_name": "FactNutritionRecommendation",
+                  "type": "lakehouse_tables.table",
+                  "description": "Daily fueling recommendations generated from curated daily training volume and carbohydrate estimates.",
+                  "children": [
+                    {
+                      "id": "b3443565-7ae2-46d2-9a11-2c547e65c2df",
+                      "is_selected": true,
+                      "display_name": "activity_date",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "date",
+                      "description": "Date for the recommendation.",
+                      "children": []
+                    },
+                    {
+                      "id": "211debe6-6a38-41ce-8f29-83f6db670930",
+                      "is_selected": true,
+                      "display_name": "fueling_focus",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Fueling focus for that day.",
+                      "children": []
+                    },
+                    {
+                      "id": "ad62f703-811c-4d4f-a79e-75a14d9b1486",
+                      "is_selected": true,
+                      "display_name": "recommendation",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Plain-language fueling recommendation.",
+                      "children": []
+                    },
+                    {
+                      "id": "fb618602-ff7c-4567-84c6-a0b0d9df4f74",
+                      "is_selected": true,
+                      "display_name": "optimal_carbs_g",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "float",
+                      "description": "Estimated carbohydrate target for the day.",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "d210fd4f-c199-470a-b8ab-dbec42e3a38e",
+                  "is_selected": true,
+                  "display_name": "DimDate",
+                  "type": "lakehouse_tables.table",
+                  "description": "Calendar dimension (one row per day). Join on date_key.",
+                  "children": [
+                    {
+                      "id": "fc0b8e94-0542-4c3e-b936-42652427fba6",
+                      "is_selected": true,
+                      "display_name": "date_key",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "date",
+                      "description": "Calendar date (key).",
+                      "children": []
+                    },
+                    {
+                      "id": "f6ffeac4-fd06-47c5-96d3-94f88a35d2c8",
+                      "is_selected": true,
+                      "display_name": "year",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "int",
+                      "description": "Year.",
+                      "children": []
+                    },
+                    {
+                      "id": "7719e994-e58b-4d83-a566-865f4548f3a8",
+                      "is_selected": true,
+                      "display_name": "month",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "int",
+                      "description": "Month number.",
+                      "children": []
+                    },
+                    {
+                      "id": "8faafdf3-3da2-488b-875b-5ee760cd6d7a",
+                      "is_selected": true,
+                      "display_name": "month_year_label",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Month label such as Oct '26.",
+                      "children": []
+                    },
+                    {
+                      "id": "7323ef37-0158-4085-b651-d7d1488df60c",
+                      "is_selected": true,
+                      "display_name": "week_start",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "date",
+                      "description": "Monday of the ISO week.",
+                      "children": []
+                    },
+                    {
+                      "id": "7d21d7c1-b0fd-4e71-bb78-f68356006675",
+                      "is_selected": true,
+                      "display_name": "day_name",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Day of week name.",
+                      "children": []
+                    },
+                    {
+                      "id": "4ca1b4dc-4f8c-4ccc-9928-036d2d5fe94b",
+                      "is_selected": true,
+                      "display_name": "is_weekend",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "boolean",
+                      "description": "True on Saturday and Sunday.",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "6f39d2a1-11a0-4557-8021-54108f31f002",
+                  "is_selected": true,
+                  "display_name": "DimActivityType",
+                  "type": "lakehouse_tables.table",
+                  "description": "Canonical activity types shared by all sources. Join FactWorkout.activity_type_key.",
+                  "children": [
+                    {
+                      "id": "1b9843d1-fb58-4782-9b62-666f281d4dd9",
+                      "is_selected": true,
+                      "display_name": "activity_type_key",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Canonical activity type code (key), e.g. cycling_road.",
+                      "children": []
+                    },
+                    {
+                      "id": "5158f600-254f-4b81-891a-c32c8b58758a",
+                      "is_selected": true,
+                      "display_name": "activity_type_name",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Readable activity type name.",
+                      "children": []
+                    },
+                    {
+                      "id": "517b67ad-dd60-45bf-8485-e3b28697454b",
+                      "is_selected": true,
+                      "display_name": "activity_family",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Activity family, e.g. cycling, running, strength.",
+                      "children": []
+                    },
+                    {
+                      "id": "cc4aae32-7405-4e8d-b5c1-10c3f8bf5d43",
+                      "is_selected": true,
+                      "display_name": "is_endurance",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "boolean",
+                      "description": "Endurance sport flag.",
+                      "children": []
+                    },
+                    {
+                      "id": "e2811a17-f1dd-4625-aae5-a96d3a730674",
+                      "is_selected": true,
+                      "display_name": "primary_intensity_metric",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Preferred intensity metric: power, pace or heart_rate.",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "354f4948-70fb-425d-9a16-71414169c144",
+                  "is_selected": true,
+                  "display_name": "DimUser",
+                  "type": "lakehouse_tables.table",
+                  "description": "Athlete profile. Join FactWorkout.user_key.",
+                  "children": [
+                    {
+                      "id": "fb040e18-91e8-4639-b14f-673895668a6a",
+                      "is_selected": true,
+                      "display_name": "user_key",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "User key.",
+                      "children": []
+                    },
+                    {
+                      "id": "23003191-abe5-424a-b82d-2e13c46266df",
+                      "is_selected": true,
+                      "display_name": "display_name",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "First name.",
+                      "children": []
+                    },
+                    {
+                      "id": "ad0dbfee-d46f-4d5c-9166-0e48626544bc",
+                      "is_selected": true,
+                      "display_name": "sex",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Sex.",
+                      "children": []
+                    },
+                    {
+                      "id": "1b8aaed7-a8cf-447e-a5e6-a1d80dfa0e0b",
+                      "is_selected": true,
+                      "display_name": "home_country",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Home country.",
+                      "children": []
+                    },
+                    {
+                      "id": "b3b735f0-b531-43cc-b92b-8c3f4a7b010c",
+                      "is_selected": true,
+                      "display_name": "primary_timezone_name",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Primary time zone.",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "fad35931-444b-465c-b630-40157b895e7f",
+                  "is_selected": true,
+                  "display_name": "DimSourceSystem",
+                  "type": "lakehouse_tables.table",
+                  "description": "Data source systems (Strava, Garmin Connect, Apple Health, ...). Join FactWorkout.source_system_key.",
+                  "children": [
+                    {
+                      "id": "cd2a0e46-f759-4292-8c95-d01416e7cd24",
+                      "is_selected": true,
+                      "display_name": "source_system_key",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Source system code (key).",
+                      "children": []
+                    },
+                    {
+                      "id": "6ba5f6cf-3a21-4a17-a693-d4541bd87bdb",
+                      "is_selected": true,
+                      "display_name": "source_name",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Source display name.",
+                      "children": []
+                    },
+                    {
+                      "id": "0a92383a-a311-4fd4-8cc5-c32085235f96",
+                      "is_selected": true,
+                      "display_name": "source_category",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Category such as fitness_platform or wearable_platform.",
+                      "children": []
+                    },
+                    {
+                      "id": "b6e83023-465b-4378-a071-0e3f55abbe7c",
+                      "is_selected": true,
+                      "display_name": "integration_method",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "How data is collected (API, HealthKit, manual).",
+                      "children": []
+                    },
+                    {
+                      "id": "4a4c1c64-252c-4420-8861-951ca08e8efc",
+                      "is_selected": true,
+                      "display_name": "is_active",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "boolean",
+                      "description": "True when the source is enabled in the refresh pipeline.",
+                      "children": []
+                    },
+                    {
+                      "id": "157426d5-0e45-417f-91ab-79bf4c61a530",
+                      "is_selected": true,
+                      "display_name": "workout_priority",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "int",
+                      "description": "Priority used to pick the primary record when sources overlap (lower wins).",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "a417d0a8-622a-41cb-9d5c-c50a14b2695a",
+                  "is_selected": true,
+                  "display_name": "FactDailyActivity",
+                  "type": "lakehouse_tables.table",
+                  "description": "One row per calendar day (rest days included) with longevity activity metrics.",
+                  "children": [
+                    {
+                      "id": "6f28b702-9f5b-4277-bd46-e62483025c11",
+                      "is_selected": true,
+                      "display_name": "date_key",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "date",
+                      "description": "Calendar day.",
+                      "children": []
+                    },
+                    {
+                      "id": "e9b03d99-b230-4d4d-acf9-99f543e66489",
+                      "is_selected": true,
+                      "display_name": "workouts",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "int",
+                      "description": "Workouts on the day.",
+                      "children": []
+                    },
+                    {
+                      "id": "07a3b99f-8299-4937-92a4-3d6ccca62d25",
+                      "is_selected": true,
+                      "display_name": "cardio_sessions",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "int",
+                      "description": "Cardio sessions (cycling, running, walking, swimming, rowing, conditioning).",
+                      "children": []
+                    },
+                    {
+                      "id": "15f6504f-7841-4089-b9a6-d5b071dac64e",
+                      "is_selected": true,
+                      "display_name": "strength_sessions",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "int",
+                      "description": "Strength training sessions.",
+                      "children": []
+                    },
+                    {
+                      "id": "8aa5df73-f4e4-4d07-8d8a-6ab8f52ceff4",
+                      "is_selected": true,
+                      "display_name": "active_minutes",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "double",
+                      "description": "Total workout minutes.",
+                      "children": []
+                    },
+                    {
+                      "id": "92850afa-06ba-4937-9d74-bb9947379a5b",
+                      "is_selected": true,
+                      "display_name": "moderate_minutes",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "double",
+                      "description": "Moderate-intensity minutes (HR zone 1-2 or strength/mobility).",
+                      "children": []
+                    },
+                    {
+                      "id": "2afefd13-a22f-4c49-bd13-5bddbb7d27ff",
+                      "is_selected": true,
+                      "display_name": "vigorous_minutes",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "double",
+                      "description": "Vigorous-intensity minutes (HR zone 3-5).",
+                      "children": []
+                    },
+                    {
+                      "id": "4cda7835-04a0-4dca-a7b5-47dc243498ae",
+                      "is_selected": true,
+                      "display_name": "zone2_minutes",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "double",
+                      "description": "Minutes in heart-rate zone 2 (endurance base).",
+                      "children": []
+                    },
+                    {
+                      "id": "2ddf2d40-ae40-40a0-abee-a032a7de0a5b",
+                      "is_selected": true,
+                      "display_name": "who_minutes",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "double",
+                      "description": "WHO-equivalent minutes = moderate + 2 x vigorous; guideline 150-300 per week.",
+                      "children": []
+                    },
+                    {
+                      "id": "59daa1c4-0a26-4a11-9cce-569f6777e1dd",
+                      "is_selected": true,
+                      "display_name": "workout_steps",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "double",
+                      "description": "Steps estimated from running/walking workouts.",
+                      "children": []
+                    },
+                    {
+                      "id": "a6acaed6-e75e-448f-b1e5-3f59d6453a69",
+                      "is_selected": true,
+                      "display_name": "steps",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "bigint",
+                      "description": "Daily steps: device steps when available, else workout estimate.",
+                      "children": []
+                    },
+                    {
+                      "id": "40a3788a-c064-4996-a38e-c88a2b5698e7",
+                      "is_selected": true,
+                      "display_name": "steps_method",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "device or estimated_from_workouts.",
+                      "children": []
+                    },
+                    {
+                      "id": "c22f49ea-8b28-4b5a-b514-60d940d12387",
+                      "is_selected": true,
+                      "display_name": "distance_km",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "double",
+                      "description": "Distance in km.",
+                      "children": []
+                    },
+                    {
+                      "id": "c382450f-e4dc-4ef8-9b45-43c9d2a2628f",
+                      "is_selected": true,
+                      "display_name": "active_energy_kcal",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "double",
+                      "description": "Active energy in kcal.",
+                      "children": []
+                    },
+                    {
+                      "id": "e9b3cc34-363b-42c5-88dd-31162e4ff494",
+                      "is_selected": true,
+                      "display_name": "training_load",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "double",
+                      "description": "Training load (TSS/TRIMP).",
+                      "children": []
+                    },
+                    {
+                      "id": "b5465b6f-967d-4f3b-81dc-d5767ff82397",
+                      "is_selected": true,
+                      "display_name": "sports",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Sports done on the day, or Rest.",
+                      "children": []
+                    },
+                    {
+                      "id": "1fbc3e2e-481b-4358-ae47-0ed9314c4a50",
+                      "is_selected": true,
+                      "display_name": "is_active_day",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "boolean",
+                      "description": "At least 30 active minutes.",
+                      "children": []
+                    },
+                    {
+                      "id": "471a2478-b4c6-4e30-bf88-8f7e4a92f90c",
+                      "is_selected": true,
+                      "display_name": "is_rest_day",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "boolean",
+                      "description": "No workout recorded.",
+                      "children": []
+                    },
+                    {
+                      "id": "23528562-5f77-4484-8673-8d956be27b69",
+                      "is_selected": true,
+                      "display_name": "active_minutes_7d",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "double",
+                      "description": "Rolling 7-day active minutes.",
+                      "children": []
+                    }
+                  ]
+                },
+                {
+                  "id": "3e49bb28-840c-4258-b6f9-817ae2f109b3",
+                  "is_selected": true,
+                  "display_name": "FactBiometric",
+                  "type": "lakehouse_tables.table",
+                  "description": "Long-format biometrics per day: VO2max, FTP, W/kg, weight, max/resting HR, HRV - measured or estimated.",
+                  "children": [
+                    {
+                      "id": "4e0b5eb3-1861-47e7-9b0e-4ce75bded180",
+                      "is_selected": true,
+                      "display_name": "date_key",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "date",
+                      "description": "Observation day.",
+                      "children": []
+                    },
+                    {
+                      "id": "d1c8dd9c-e16f-47a1-97e9-2dd0c616e65e",
+                      "is_selected": true,
+                      "display_name": "metric_code",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Metric code, e.g. vo2max_ml_kg_min, ftp_watts, ftp_w_per_kg, body_weight_kg.",
+                      "children": []
+                    },
+                    {
+                      "id": "01c92e83-9f48-4f6a-9265-820640dd3400",
+                      "is_selected": true,
+                      "display_name": "metric_name",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Readable metric name.",
+                      "children": []
+                    },
+                    {
+                      "id": "150a485a-2e76-473f-a651-0adf717c0fd7",
+                      "is_selected": true,
+                      "display_name": "unit",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Unit.",
+                      "children": []
+                    },
+                    {
+                      "id": "ab961d7e-adb4-499d-8a40-51a7a4035cb1",
+                      "is_selected": true,
+                      "display_name": "value",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "double",
+                      "description": "Metric value.",
+                      "children": []
+                    },
+                    {
+                      "id": "dd61c924-7ef7-41a5-a3ba-372ed6fbd86e",
+                      "is_selected": true,
+                      "display_name": "method",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "How the value was obtained, e.g. estimated_running_vdot, estimated_cycling_5min_power_acsm.",
+                      "children": []
+                    },
+                    {
+                      "id": "b6692a6b-3dbd-4e3a-bade-c69360647121",
+                      "is_selected": true,
+                      "display_name": "method_label",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Readable method.",
+                      "children": []
+                    },
+                    {
+                      "id": "bd9ad163-a09f-4bc2-8cf0-74ae646ed4cc",
+                      "is_selected": true,
+                      "display_name": "is_estimate",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "boolean",
+                      "description": "True when derived rather than measured.",
+                      "children": []
+                    },
+                    {
+                      "id": "14ec812f-9268-43c9-95d4-b6db0e2d9a7e",
+                      "is_selected": true,
+                      "display_name": "source_system",
+                      "type": "lakehouse_tables.column",
+                      "data_type": "varchar",
+                      "description": "Source system.",
+                      "children": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

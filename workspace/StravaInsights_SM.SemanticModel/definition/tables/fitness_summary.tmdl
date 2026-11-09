@@ -1,0 +1,202 @@
+table fitness_summary
+	lineageTag: d91cf6bf-2224-48a5-a300-0732fa28088a
+	sourceLineageTag: [dbo].[FactFitnessSummary]
+
+	measure 'Current FTP W' = MAX(fitness_summary[current_ftp_w])
+		formatString: 0
+		lineageTag: 48ac41be-612b-43bc-afc7-50dad3b8f039
+
+	measure 'FTP This Year W' = MAX(fitness_summary[ftp_this_year_w])
+		formatString: 0
+		lineageTag: 17d369ed-7cd8-49aa-b556-2d9e09d96fdb
+
+	measure 'FTP Last Year W' = MAX(fitness_summary[ftp_last_year_w])
+		formatString: 0
+		lineageTag: 1836cc13-33d5-46e3-82d9-1e9fcf053f73
+
+	measure 'FTP Change vs Last Year' = MAX(fitness_summary[ftp_change_pct])
+		formatString: +0.0%;-0.0%;0.0%
+		lineageTag: 99e0a221-6299-43b6-bcb5-724718763a0e
+
+	measure 'Best 20 min Last 90 Days W' = MAX(fitness_summary[best_20min_90d_w])
+		formatString: 0
+		lineageTag: f7783bd5-44f3-4a26-afec-ad108db3bdd0
+
+	measure 'Current Fitness CTL' = MAX(fitness_summary[fitness_ctl])
+		formatString: 0
+		lineageTag: b92c8988-de9d-4b8c-b69d-586704b48054
+
+	measure 'Current Fatigue ATL' = MAX(fitness_summary[fatigue_atl])
+		formatString: 0
+		lineageTag: d1a3502d-9c76-4caa-8b45-f7cfb05232cb
+
+	measure 'Current Form TSB' = MAX(fitness_summary[form_tsb])
+		formatString: 0
+		lineageTag: f4e20348-6b4e-4d0d-ae85-6019b5771b1f
+
+	measure 'Form Status' = SELECTEDVALUE(fitness_summary[form_status], "-")
+		lineageTag: 8388445f-4388-46dd-8c1a-af0e2b32e017
+
+	measure 'Max HR This Year' = MAX(fitness_summary[max_hr_this_year])
+		formatString: 0
+		lineageTag: d12cabec-84b8-4d96-b853-392f519dd196
+
+	column current_ftp_w
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: f916a209-591b-40c7-ac64-6c4da5305122
+		sourceLineageTag: current_ftp_w
+		summarizeBy: none
+		sourceColumn: current_ftp_w
+
+		annotation SummarizationSetBy = Automatic
+
+	column current_ftp_method
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 6b17299c-f72c-405b-8ef3-0c647ea62eab
+		sourceLineageTag: current_ftp_method
+		summarizeBy: none
+		sourceColumn: current_ftp_method
+
+		annotation SummarizationSetBy = Automatic
+
+	column current_ftp_date
+		dataType: dateTime
+		formatString: Short Date
+		sourceProviderType: date
+		lineageTag: 7917d030-9308-4bc8-8381-342a6d404a80
+		sourceLineageTag: current_ftp_date
+		summarizeBy: none
+		sourceColumn: current_ftp_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column best_20min_90d_w
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: fe99ba65-a958-453f-9842-7e028e311d44
+		sourceLineageTag: best_20min_90d_w
+		summarizeBy: none
+		sourceColumn: best_20min_90d_w
+
+		annotation SummarizationSetBy = Automatic
+
+	column ftp_this_year_w
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 5f1a07f3-6a55-4ae7-83d8-1d1201e9797b
+		sourceLineageTag: ftp_this_year_w
+		summarizeBy: none
+		sourceColumn: ftp_this_year_w
+
+		annotation SummarizationSetBy = Automatic
+
+	column ftp_last_year_w
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: a5626539-e60a-412c-a3f2-719b1afc1b01
+		sourceLineageTag: ftp_last_year_w
+		summarizeBy: none
+		sourceColumn: ftp_last_year_w
+
+		annotation SummarizationSetBy = Automatic
+
+	column ftp_change_pct
+		dataType: double
+		formatString: 0.0%
+		sourceProviderType: float
+		lineageTag: 8f3d07a5-2896-4900-aeb5-5d00b3ff3d4c
+		sourceLineageTag: ftp_change_pct
+		summarizeBy: none
+		sourceColumn: ftp_change_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column this_year
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: ef1e362b-e958-4730-8482-074bc4b9b9db
+		sourceLineageTag: this_year
+		summarizeBy: none
+		sourceColumn: this_year
+
+		annotation SummarizationSetBy = Automatic
+
+	column last_year
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: c0c4cd04-2777-4b31-94c1-674345fca737
+		sourceLineageTag: last_year
+		summarizeBy: none
+		sourceColumn: last_year
+
+		annotation SummarizationSetBy = Automatic
+
+	column fitness_ctl
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: d53139d1-4645-48c3-9d8a-8727ce205e5f
+		sourceLineageTag: fitness_ctl
+		summarizeBy: none
+		sourceColumn: fitness_ctl
+
+		annotation SummarizationSetBy = Automatic
+
+	column fatigue_atl
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 4249d44e-5909-4af4-b3bd-284343ead5ca
+		sourceLineageTag: fatigue_atl
+		summarizeBy: none
+		sourceColumn: fatigue_atl
+
+		annotation SummarizationSetBy = Automatic
+
+	column form_tsb
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: b53fdeea-72e9-45e0-a689-7889fb07f0bb
+		sourceLineageTag: form_tsb
+		summarizeBy: none
+		sourceColumn: form_tsb
+
+		annotation SummarizationSetBy = Automatic
+
+	column form_status
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 6c5e59d2-5593-49c0-a76c-1c304e47f59e
+		sourceLineageTag: form_status
+		summarizeBy: none
+		sourceColumn: form_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column max_hr_this_year
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: eb03c7ed-9827-4619-87ee-602661e6e686
+		sourceLineageTag: max_hr_this_year
+		summarizeBy: none
+		sourceColumn: max_hr_this_year
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fitness_summary = entity
+		mode: directLake
+		source
+			entityName: FactFitnessSummary
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

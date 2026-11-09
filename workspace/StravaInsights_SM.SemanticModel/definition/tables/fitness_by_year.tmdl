@@ -1,0 +1,218 @@
+table fitness_by_year
+	lineageTag: 4d193eab-1c61-4c95-a0c4-72f715411301
+	sourceLineageTag: [dbo].[FactFitnessYear]
+
+	measure 'FTP W' = MAX(fitness_by_year[ftp_w])
+		formatString: 0
+		lineageTag: 61ef127e-d235-4c96-a7e2-735a5ed09330
+
+	measure 'Best 60 min W' = MAX(fitness_by_year[best_60min_w])
+		formatString: 0
+		lineageTag: 8c5194e7-16a3-462b-8e50-721e6625a740
+
+	column year
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 59871968-d593-4255-9989-17ed3822bafc
+		sourceLineageTag: year
+		summarizeBy: none
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column year_label
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 6ac962b3-755e-4bbf-93bd-009e01a2065c
+		sourceLineageTag: year_label
+		summarizeBy: none
+		sourceColumn: year_label
+		sortByColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column ftp_w
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: f6cc327b-5e93-449b-a967-2c0f3ecb413e
+		sourceLineageTag: ftp_w
+		summarizeBy: none
+		sourceColumn: ftp_w
+
+		annotation SummarizationSetBy = Automatic
+
+	column ftp_change_pct
+		dataType: double
+		formatString: 0.0%
+		sourceProviderType: float
+		lineageTag: 2db6e26c-69f4-46e5-81bc-a7e8088e17d0
+		sourceLineageTag: ftp_change_pct
+		summarizeBy: none
+		sourceColumn: ftp_change_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column best_5min_w
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 5c9628c8-89d2-4cc0-9fb3-ca6ab53526b9
+		sourceLineageTag: best_5min_w
+		summarizeBy: none
+		sourceColumn: best_5min_w
+
+		annotation SummarizationSetBy = Automatic
+
+	column best_20min_w
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 8eefd38a-9b0b-4c4f-aa29-67e73d7104b2
+		sourceLineageTag: best_20min_w
+		summarizeBy: none
+		sourceColumn: best_20min_w
+
+		annotation SummarizationSetBy = Automatic
+
+	column best_60min_w
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 7478416c-b2f4-40dc-b46a-421b5f96c15f
+		sourceLineageTag: best_60min_w
+		summarizeBy: none
+		sourceColumn: best_60min_w
+
+		annotation SummarizationSetBy = Automatic
+
+	column rides
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 0268a1d1-efa1-4a96-ad86-05f86fba42b7
+		sourceLineageTag: rides
+		summarizeBy: none
+		sourceColumn: rides
+
+		annotation SummarizationSetBy = Automatic
+
+	column ride_hours
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 08f99b88-41ff-4ce0-b919-f7afe1bdd8cb
+		sourceLineageTag: ride_hours
+		summarizeBy: none
+		sourceColumn: ride_hours
+
+		annotation SummarizationSetBy = Automatic
+
+	column ride_km
+		dataType: double
+		formatString: #,0
+		sourceProviderType: float
+		lineageTag: 15cdc75b-6650-496f-a749-2e04b7358ab7
+		sourceLineageTag: ride_km
+		summarizeBy: none
+		sourceColumn: ride_km
+
+		annotation SummarizationSetBy = Automatic
+
+	column runs
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: db278c09-0161-4e41-bcbb-2e4acbdb246b
+		sourceLineageTag: runs
+		summarizeBy: none
+		sourceColumn: runs
+
+		annotation SummarizationSetBy = Automatic
+
+	column run_km
+		dataType: double
+		formatString: #,0
+		sourceProviderType: float
+		lineageTag: e60f4eb3-bf7f-4db0-918f-06a8d67e5054
+		sourceLineageTag: run_km
+		summarizeBy: none
+		sourceColumn: run_km
+
+		annotation SummarizationSetBy = Automatic
+
+	column workouts
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 25a03d4c-51f6-4a41-bacd-56f4adbc9de4
+		sourceLineageTag: workouts
+		summarizeBy: none
+		sourceColumn: workouts
+
+		annotation SummarizationSetBy = Automatic
+
+	column training_hours
+		dataType: double
+		formatString: #,0
+		sourceProviderType: float
+		lineageTag: ed9cb86b-6bfa-48d7-84e9-1154c69d1ef5
+		sourceLineageTag: training_hours
+		summarizeBy: none
+		sourceColumn: training_hours
+
+		annotation SummarizationSetBy = Automatic
+
+	column training_load
+		dataType: double
+		formatString: #,0
+		sourceProviderType: float
+		lineageTag: 241f5a24-263e-48b7-be10-5c7aa64c524a
+		sourceLineageTag: training_load
+		summarizeBy: none
+		sourceColumn: training_load
+
+		annotation SummarizationSetBy = Automatic
+
+	column max_hr_bpm
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 457d3638-996a-4a5e-aeb5-eb23655d33eb
+		sourceLineageTag: max_hr_bpm
+		summarizeBy: none
+		sourceColumn: max_hr_bpm
+
+		annotation SummarizationSetBy = Automatic
+
+	column best_5k_time
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 0afb480e-8dbf-4789-9918-2581fcdffbff
+		sourceLineageTag: best_5k_time
+		summarizeBy: none
+		sourceColumn: best_5k_time
+
+		annotation SummarizationSetBy = Automatic
+
+	column best_10k_time
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: bae1e6a0-178b-441a-b459-ee35a0a23fbd
+		sourceLineageTag: best_10k_time
+		summarizeBy: none
+		sourceColumn: best_10k_time
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fitness_by_year = entity
+		mode: directLake
+		source
+			entityName: FactFitnessYear
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

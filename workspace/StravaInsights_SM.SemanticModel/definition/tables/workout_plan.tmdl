@@ -1,0 +1,96 @@
+table workout_plan
+	lineageTag: c57db586-3cfd-45d4-97f6-7df8cfe6de41
+	sourceLineageTag: [dbo].[FactWorkoutPlan]
+
+	column Date
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 7e679894-0259-4a7e-b493-ae9c910a52b4
+		sourceLineageTag: plan_date
+		summarizeBy: none
+		sourceColumn: plan_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column Day
+		dataType: string
+		lineageTag: 62a78fa3-d8f4-45b0-b57a-ec9dc091e41b
+		sourceLineageTag: day_name
+		summarizeBy: none
+		sourceColumn: day_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Workout
+		dataType: string
+		lineageTag: 55036bb8-d70c-4dd8-8424-53cc149b5dce
+		sourceLineageTag: workout_name
+		summarizeBy: none
+		sourceColumn: workout_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		lineageTag: 4157d4d1-b17c-426e-a4f3-3e7aff429541
+		sourceLineageTag: category
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Duration Minutes'
+		dataType: int64
+		formatString: 0
+		lineageTag: e8a5ec2f-56d8-427c-a64a-fd159744200e
+		sourceLineageTag: duration_minutes
+		summarizeBy: sum
+		sourceColumn: duration_minutes
+
+		annotation SummarizationSetBy = Automatic
+
+	column Target
+		dataType: string
+		lineageTag: 15d510b9-e68e-49a4-848f-9daa700142a4
+		sourceLineageTag: target
+		summarizeBy: none
+		sourceColumn: target
+
+		annotation SummarizationSetBy = Automatic
+
+	column Notes
+		dataType: string
+		lineageTag: e08973cb-4e76-4d8d-94dd-b35f13f3439e
+		sourceLineageTag: notes
+		summarizeBy: none
+		sourceColumn: notes
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Week Focus'
+		dataType: string
+		lineageTag: 5386eeb9-ec5b-43e2-ae10-84e7d43844c1
+		sourceLineageTag: week_focus
+		summarizeBy: none
+		sourceColumn: week_focus
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Readiness Flag'
+		dataType: string
+		lineageTag: e71ee4ec-4193-4d4a-ae96-9755a1e6f1f9
+		sourceLineageTag: readiness_flag
+		summarizeBy: none
+		sourceColumn: readiness_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	partition workout_plan = entity
+		mode: directLake
+		source
+			entityName: FactWorkoutPlan
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

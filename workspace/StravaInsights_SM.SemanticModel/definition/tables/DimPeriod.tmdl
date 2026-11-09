@@ -1,0 +1,59 @@
+table DimPeriod
+	lineageTag: 382304f8-29f3-44f4-b837-7c4a3fc45d69
+	sourceLineageTag: [dbo].[DimPeriod]
+
+
+	column Period
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: de73aeb4-ab03-48fa-a611-fd5a82e889d2
+		sourceLineageTag: period_label
+		summarizeBy: none
+		sourceColumn: period_label
+		sortByColumn: period_sort
+
+		annotation SummarizationSetBy = Automatic
+
+	column period_sort
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 5ba1b221-2af1-4202-96fb-3ab44a9acc15
+		sourceLineageTag: period_sort
+		summarizeBy: none
+		sourceColumn: period_sort
+
+		annotation SummarizationSetBy = Automatic
+
+	column date_key
+		dataType: dateTime
+		isHidden
+		formatString: Short Date
+		sourceProviderType: date
+		lineageTag: 00ece517-1f82-4a70-ab7f-ea9159c1ec70
+		sourceLineageTag: date_key
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_default
+		dataType: boolean
+		isHidden
+		sourceProviderType: bit
+		lineageTag: ec1de069-7aac-4946-a1c5-a3e1427af258
+		sourceLineageTag: is_default
+		summarizeBy: none
+		sourceColumn: is_default
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimPeriod = entity
+		mode: directLake
+		source
+			entityName: DimPeriod
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table

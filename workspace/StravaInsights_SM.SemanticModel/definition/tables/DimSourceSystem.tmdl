@@ -1,0 +1,84 @@
+table DimSourceSystem
+	lineageTag: c5b68229-3417-466b-aff7-b724f0c5c5af
+	sourceLineageTag: [dbo].[DimSourceSystem]
+
+	column source_system_key
+		dataType: string
+		isKey
+		sourceProviderType: varchar(8000)
+		lineageTag: 8b6b9e3d-08f0-48aa-98e8-eb9ae4e3a88d
+		sourceLineageTag: source_system_key
+		summarizeBy: none
+		sourceColumn: source_system_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column source_name
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 524de7a7-3562-4ec0-89f8-2c098c8409c2
+		sourceLineageTag: source_name
+		summarizeBy: none
+		sourceColumn: source_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column source_category
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: cbcd1f84-f1a1-4422-8bd2-6b013e20dbe8
+		sourceLineageTag: source_category
+		summarizeBy: none
+		sourceColumn: source_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column integration_method
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 6a33f85b-4473-4852-8bcc-83906b855140
+		sourceLineageTag: integration_method
+		summarizeBy: none
+		sourceColumn: integration_method
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_active
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: 43a7754b-7016-4659-94ce-33ad6dcd6f19
+		sourceLineageTag: is_active
+		summarizeBy: none
+		sourceColumn: is_active
+
+		annotation SummarizationSetBy = Automatic
+
+	column workout_priority
+		dataType: int64
+		sourceProviderType: int
+		lineageTag: 97ee7ad1-5239-4097-be25-c73c7d9230fc
+		sourceLineageTag: workout_priority
+		summarizeBy: none
+		sourceColumn: workout_priority
+
+		annotation SummarizationSetBy = Automatic
+
+	column load_order
+		dataType: int64
+		sourceProviderType: int
+		lineageTag: e8e71942-cc04-4e81-a8fa-e42a7fa1f450
+		sourceLineageTag: load_order
+		summarizeBy: none
+		sourceColumn: load_order
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimSourceSystem = entity
+		mode: directLake
+		source
+			entityName: DimSourceSystem
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

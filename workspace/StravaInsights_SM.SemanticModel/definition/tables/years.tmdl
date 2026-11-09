@@ -1,0 +1,36 @@
+table years
+	lineageTag: bda09e3a-9d60-4ca6-8b9d-6c64d1c888ed
+	sourceLineageTag: [dbo].[DimYear]
+
+	column year
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: f586422b-e4f0-40f1-b3c9-db30192cb118
+		sourceLineageTag: year
+		summarizeBy: none
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column year_label
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: b2c08eea-c8a5-4673-aa6a-c6be763d4110
+		sourceLineageTag: year_label
+		summarizeBy: none
+		sourceColumn: year_label
+		sortByColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	partition years = entity
+		mode: directLake
+		source
+			entityName: DimYear
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

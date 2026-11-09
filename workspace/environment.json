@@ -1,0 +1,38 @@
+{
+  "workspace": {
+    "id": "00000000-0000-4000-8000-000000000001",
+    "name": "StravaInsights"
+  },
+  "lakehouses": {
+    "Bronze": {
+      "id": "00000000-0000-4000-8000-000000000011",
+      "sqlEndpointId": "00000000-0000-4000-8000-000000000012"
+    },
+    "Strava_Silver": {
+      "id": "00000000-0000-4000-8000-000000000021",
+      "sqlEndpointId": "00000000-0000-4000-8000-000000000022"
+    },
+    "Strava_Gold": {
+      "id": "00000000-0000-4000-8000-000000000031",
+      "sqlEndpointId": "00000000-0000-4000-8000-000000000032"
+    }
+  },
+  "items": {
+    "DataAgent/Strava insights agent": "00000000-0000-4000-8000-000000000101",
+    "DataPipeline/Refresh_Orchestration": "00000000-0000-4000-8000-000000000102",
+    "Notebook/Data_Quality_Checks": "00000000-0000-4000-8000-000000000103",
+    "Notebook/Gold_Longevity_Metrics": "00000000-0000-4000-8000-000000000104",
+    "Notebook/Refresh_Semantic_Models": "00000000-0000-4000-8000-000000000105",
+    "Notebook/Silver_Reference_Data": "00000000-0000-4000-8000-000000000106",
+    "Notebook/Source_Registry": "00000000-0000-4000-8000-000000000107",
+    "Notebook/Strava_Auth": "00000000-0000-4000-8000-000000000108",
+    "Notebook/Strava_Ingest": "00000000-0000-4000-8000-000000000109",
+    "Notebook/Strava_Silver_Transform": "00000000-0000-4000-8000-00000000010a",
+    "Notebook/Strava_Workout_Generator": "00000000-0000-4000-8000-00000000010b",
+    "Notebook/Training_Weekly_Metrics": "00000000-0000-4000-8000-00000000010c",
+    "Report/Strava Trends": "00000000-0000-4000-8000-00000000010d",
+    "SemanticModel/StravaInsights_SM": "00000000-0000-4000-8000-00000000010e"
+  },
+  "sqlConnectionString": "your-sql-endpoint.datawarehouse.fabric.microsoft.com",
+  "keyVaultUrl": "https://your-key-vault.vault.azure.net/"
+}

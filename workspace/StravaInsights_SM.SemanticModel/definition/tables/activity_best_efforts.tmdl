@@ -1,0 +1,141 @@
+table activity_best_efforts
+	lineageTag: ac3db946-9ee5-471f-b668-4264c6c2430a
+	sourceLineageTag: [dbo].[FactWorkoutBestEffort]
+
+	column workout_key
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(8000)
+		lineageTag: 83a8be78-8588-4b4f-8703-8b25e14165b2
+		sourceLineageTag: workout_key
+		summarizeBy: none
+		sourceColumn: workout_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column effort_type
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 3804edac-c41b-47f0-b04e-8fe8c529b4cb
+		sourceLineageTag: effort_type
+		summarizeBy: none
+		sourceColumn: effort_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column effort_name
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 544f8432-d895-424c-91a6-425965f12725
+		sourceLineageTag: effort_name
+		summarizeBy: none
+		sourceColumn: effort_name
+		sortByColumn: effort_sort
+
+		annotation SummarizationSetBy = Automatic
+
+	column effort_sort
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 42665c0a-b184-41db-8060-fc2381e05032
+		sourceLineageTag: effort_sort
+		summarizeBy: none
+		sourceColumn: effort_sort
+
+		annotation SummarizationSetBy = Automatic
+
+	column duration_s
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 5c20399a-ff63-4da2-88ac-6dea22e6dce9
+		sourceLineageTag: duration_s
+		summarizeBy: none
+		sourceColumn: duration_s
+
+		annotation SummarizationSetBy = Automatic
+
+	column time_label
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 3baeb864-10b8-4bec-a382-927fd963f50d
+		sourceLineageTag: time_label
+		summarizeBy: none
+		sourceColumn: time_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_power_w
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: e384253e-7e78-4d2b-8b2f-1b1049d2d27f
+		sourceLineageTag: avg_power_w
+		summarizeBy: none
+		sourceColumn: avg_power_w
+
+		annotation SummarizationSetBy = Automatic
+
+	column best_power_w
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: a0d29214-2849-419f-a8bc-28e7287c0772
+		sourceLineageTag: best_power_w
+		summarizeBy: none
+		sourceColumn: best_power_w
+
+		annotation SummarizationSetBy = Automatic
+
+	column result_label
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 5e80e4cf-5cde-4d0b-b238-12a57b8dc6f3
+		sourceLineageTag: result_label
+		summarizeBy: none
+		sourceColumn: result_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column best_label
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: b06262db-16f0-4e11-bd93-b3f53c84ba4f
+		sourceLineageTag: best_label
+		summarizeBy: none
+		sourceColumn: best_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column pct_of_best
+		dataType: double
+		formatString: 0.0
+		sourceProviderType: float
+		lineageTag: e8cfba0f-7d70-4ea3-ad04-56bc96fd0a9f
+		sourceLineageTag: pct_of_best
+		summarizeBy: none
+		sourceColumn: pct_of_best
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_all_time_best
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: 999aa3c0-7e58-4105-9a77-413536e8b5b4
+		sourceLineageTag: is_all_time_best
+		summarizeBy: none
+		sourceColumn: is_all_time_best
+
+		annotation SummarizationSetBy = Automatic
+
+	partition activity_best_efforts = entity
+		mode: directLake
+		source
+			entityName: FactWorkoutBestEffort
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

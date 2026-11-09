@@ -1,0 +1,121 @@
+table fitness_daily
+	lineageTag: 9a76627a-2241-44a7-af35-9f8c40037ece
+	sourceLineageTag: [dbo].[FactFitnessDaily]
+
+	measure 'Fitness CTL' = AVERAGE(fitness_daily[fitness_ctl])
+		formatString: 0
+		lineageTag: 555e486d-8404-489f-8004-2828a98be38a
+
+	measure 'Fatigue ATL' = AVERAGE(fitness_daily[fatigue_atl])
+		formatString: 0
+		lineageTag: f760a4ad-7950-4451-bc79-ac0c01fae4a8
+
+	measure 'Form TSB' = AVERAGE(fitness_daily[form_tsb])
+		formatString: 0
+		lineageTag: 82744caa-feea-4a14-bd39-8b4679509280
+
+	/// Chronic training load (42-day) on the last day of the selected period.
+	measure 'Fitness CTL at Period End' =
+			VAR _last = CALCULATE(MAX(fitness_daily[date]), KEEPFILTERS(DimDate[Date] <= TODAY()))
+			RETURN CALCULATE(AVERAGE(fitness_daily[fitness_ctl]), fitness_daily[date] = _last)
+		formatString: 0
+		displayFolder: Fitness
+		lineageTag: 7b44bd0a-3c65-4c73-bca6-5640e9d1c77a
+
+	measure 'Form TSB at Period End' =
+			VAR _last = CALCULATE(MAX(fitness_daily[date]), KEEPFILTERS(DimDate[Date] <= TODAY()))
+			RETURN CALCULATE(AVERAGE(fitness_daily[form_tsb]), fitness_daily[date] = _last)
+		formatString: 0
+		displayFolder: Fitness
+		lineageTag: a39bc224-f427-46f5-9484-56be97bcfc87
+
+	/// Form (TSB = CTL - ATL) on the last day of the selected period, same bands as fitness_summary.
+	measure 'Form at Period End' =
+			VAR _tsb = [Form TSB at Period End]
+			RETURN
+			    SWITCH(TRUE(),
+			        ISBLANK(_tsb), "No data",
+			        _tsb > 5, "Fresh",
+			        _tsb >= -10, "Neutral",
+			        _tsb >= -30, "Productive training",
+			        "High fatigue"
+			    )
+		displayFolder: Fitness
+		lineageTag: 44634ce4-95eb-4708-8840-806f6a222066
+
+	column date
+		dataType: dateTime
+		formatString: Short Date
+		sourceProviderType: date
+		lineageTag: 662f6ff8-82e1-43bf-87dc-8d7467eb19d6
+		sourceLineageTag: date
+		summarizeBy: none
+		sourceColumn: date
+
+		annotation SummarizationSetBy = Automatic
+
+	column year
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: bcd1ecda-fe79-474b-8f47-ed4b296ba0fa
+		sourceLineageTag: year
+		summarizeBy: none
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column training_load
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 3300134d-be67-4827-ab37-07eba414cc33
+		sourceLineageTag: training_load
+		summarizeBy: none
+		sourceColumn: training_load
+
+		annotation SummarizationSetBy = Automatic
+
+	column fitness_ctl
+		dataType: double
+		formatString: 0.0
+		sourceProviderType: float
+		lineageTag: 14e8bc12-f9b5-4977-b788-f7aaab4187b3
+		sourceLineageTag: fitness_ctl
+		summarizeBy: none
+		sourceColumn: fitness_ctl
+
+		annotation SummarizationSetBy = Automatic
+
+	column fatigue_atl
+		dataType: double
+		formatString: 0.0
+		sourceProviderType: float
+		lineageTag: 0e584a96-d69a-45e5-bdc9-a2e3e01beca3
+		sourceLineageTag: fatigue_atl
+		summarizeBy: none
+		sourceColumn: fatigue_atl
+
+		annotation SummarizationSetBy = Automatic
+
+	column form_tsb
+		dataType: double
+		formatString: 0.0
+		sourceProviderType: float
+		lineageTag: a6da2a0a-34e4-49e8-a69d-f045e35df6a7
+		sourceLineageTag: form_tsb
+		summarizeBy: none
+		sourceColumn: form_tsb
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fitness_daily = entity
+		mode: directLake
+		source
+			entityName: FactFitnessDaily
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

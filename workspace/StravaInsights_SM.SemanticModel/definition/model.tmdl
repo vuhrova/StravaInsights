@@ -1,0 +1,36 @@
+model Model
+	culture: en-US
+	collation: Latin1_General_100_BIN2_UTF8
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_QueryOrder = ["DatabaseQuery"]
+
+annotation PBI_ProTooling = ["WebModelingEdit"]
+
+ref table activities
+ref table training_weekly_metrics
+ref table workout_plan
+ref table DimSourceSystem
+ref table activity_samples
+ref table activity_splits
+ref table activity_zones
+ref table activity_best_efforts
+ref table activity_sections
+ref table activity_insights
+ref table years
+ref table fitness_by_year
+ref table power_curve
+ref table fitness_daily
+ref table fitness_summary
+ref table DimDate
+ref table FactDailyActivity
+ref table FactBiometric
+ref table DimPeriod
+ref table DataStatus
+ref table DataQualityCheck
