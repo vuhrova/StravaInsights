@@ -1,0 +1,64 @@
+relationship 3262e1cc-9049-46a6-9685-3f9f75d8c9ed
+	fromColumn: activities.source_system
+	toColumn: DimSourceSystem.source_system_key
+
+relationship 727a99e3-1274-420f-ba1a-4174d5616de7
+	fromColumn: activity_samples.workout_key
+	toColumn: activities.workout_key
+
+relationship df493ff4-e1f6-4e9d-b0f9-d89b3bc790ee
+	fromColumn: activity_splits.workout_key
+	toColumn: activities.workout_key
+
+relationship fc13e05e-9633-4e1a-b80f-d6fd75ff0fc2
+	fromColumn: activity_zones.workout_key
+	toColumn: activities.workout_key
+
+relationship c8858a53-8776-4346-9115-eca3a66e4a49
+	fromColumn: activity_best_efforts.workout_key
+	toColumn: activities.workout_key
+
+relationship 04ae2be3-7730-4575-b8b3-9b3b6e0a23d1
+	fromColumn: activity_sections.workout_key
+	toColumn: activities.workout_key
+
+relationship 4100762d-830a-46a8-8440-c423963f4e63
+	fromColumn: activity_insights.workout_key
+	toColumn: activities.workout_key
+
+relationship beadac29-51c9-4e3b-a6c7-7367ad76cde7
+	fromColumn: fitness_by_year.year
+	toColumn: years.year
+
+relationship 20565a82-1428-4e67-9384-da56fe85fe27
+	fromColumn: power_curve.year
+	toColumn: years.year
+
+relationship 0630557b-5264-4d3e-afcf-c7dcf80d5c84
+	fromColumn: fitness_daily.year
+	toColumn: years.year
+
+relationship 5505e589-44e1-442b-8a41-f53142534083
+	fromColumn: activities.activity_date
+	toColumn: DimDate.Date
+
+relationship db1601a2-2a4b-4819-93a1-128bbaec7a48
+	fromColumn: FactDailyActivity.date_key
+	toColumn: DimDate.Date
+
+relationship 50035a0b-27ce-4814-94bb-a5a63565d5f0
+	fromColumn: FactBiometric.date_key
+	toColumn: DimDate.Date
+
+relationship 272752e8-773f-4800-a4d7-f06af20393a6
+	fromColumn: fitness_daily.date
+	toColumn: DimDate.Date
+
+relationship 8a257cb6-b5e2-4aa8-a500-7f21538c9d83
+	fromColumn: training_weekly_metrics.week_start
+	toColumn: DimDate.Date
+
+relationship 4789cb9f-aee7-429a-a535-4e7cf3f0f500
+	crossFilteringBehavior: bothDirections
+	fromColumn: DimPeriod.date_key
+	toColumn: DimDate.Date

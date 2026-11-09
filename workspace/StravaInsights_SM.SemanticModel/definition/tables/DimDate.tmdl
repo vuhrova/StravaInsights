@@ -1,0 +1,164 @@
+table DimDate
+	lineageTag: 53aa0659-8d83-46ec-b6bc-583ed8c2142f
+	sourceLineageTag: [dbo].[DimDate]
+	dataCategory: Time
+
+
+	column Date
+		dataType: dateTime
+		isKey
+		formatString: Short Date
+		sourceProviderType: date
+		lineageTag: e89e553c-7dc5-47a9-8305-a1a37e95e88d
+		sourceLineageTag: date_key
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 14eb5cc3-551a-426c-9606-64b6f6149dac
+		sourceLineageTag: year
+		summarizeBy: none
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column quarter
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 75895a49-7357-418d-9853-bd5dd369c7da
+		sourceLineageTag: quarter
+		summarizeBy: none
+		sourceColumn: quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_number
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 2d24c0ad-d0e2-485d-b3a9-a1df914828b2
+		sourceLineageTag: month
+		summarizeBy: none
+		sourceColumn: month
+
+		annotation SummarizationSetBy = Automatic
+
+	column month_name
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(8000)
+		lineageTag: b07baa7b-55b7-43a4-adbd-057ff7f379f8
+		sourceLineageTag: month_name
+		summarizeBy: none
+		sourceColumn: month_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: d2268c86-0269-4241-a1de-9f711f173f85
+		sourceLineageTag: month_year_label
+		summarizeBy: none
+		sourceColumn: month_year_label
+		sortByColumn: year_month_sort
+
+		annotation SummarizationSetBy = Automatic
+
+	column year_month_sort
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 9e1a3348-046e-490f-873a-49778b13fe40
+		sourceLineageTag: year_month_sort
+		summarizeBy: none
+		sourceColumn: year_month_sort
+
+		annotation SummarizationSetBy = Automatic
+
+	column Week
+		dataType: dateTime
+		formatString: dd MMM yy
+		sourceProviderType: date
+		lineageTag: a23e101c-9dca-45e9-85c9-5ff3eadc59c8
+		sourceLineageTag: week_start
+		summarizeBy: none
+		sourceColumn: week_start
+
+		annotation SummarizationSetBy = Automatic
+
+	column iso_week
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 25c20176-cda7-439d-b858-c45d3856548f
+		sourceLineageTag: iso_week
+		summarizeBy: none
+		sourceColumn: iso_week
+
+		annotation SummarizationSetBy = Automatic
+
+	column day_of_week
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: d9010419-64e6-4239-baae-c28914377c16
+		sourceLineageTag: day_of_week
+		summarizeBy: none
+		sourceColumn: day_of_week
+
+		annotation SummarizationSetBy = Automatic
+
+	column weekday_number
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 51bafe67-ccaa-460f-800e-4484735a783c
+		sourceLineageTag: weekday_number
+		summarizeBy: none
+		sourceColumn: weekday_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column Weekday
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: e138c1fb-fbc7-4e30-921f-7093f10c206b
+		sourceLineageTag: day_name
+		summarizeBy: none
+		sourceColumn: day_name
+		sortByColumn: weekday_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_weekend
+		dataType: boolean
+		isHidden
+		sourceProviderType: bit
+		lineageTag: 8f54512f-92a0-4035-9e25-7f9ecbb895e9
+		sourceLineageTag: is_weekend
+		summarizeBy: none
+		sourceColumn: is_weekend
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimDate = entity
+		mode: directLake
+		source
+			entityName: DimDate
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table

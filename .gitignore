@@ -17,8 +17,20 @@ venv/
 *.pfx
 secrets*.json
 **/auth_tokens*
+# Your own workspace / Key Vault / schedule, written by tools/install.py (no secrets, but personal)
+stravainsights.local.json
+*.local.json
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
 
 # Exported data / screenshots produced locally
 exports/
 *.parquet
 *.csv
+
+# Local installation settings written by tools/install.py (no secrets)
+stravainsights.local.json

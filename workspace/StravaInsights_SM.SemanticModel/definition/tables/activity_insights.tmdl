@@ -1,0 +1,122 @@
+table activity_insights
+	lineageTag: 9660e508-22aa-464a-b761-d6ea73247d9a
+	sourceLineageTag: [dbo].[FactWorkoutInsight]
+
+	measure 'Insight Intensity' = SELECTEDVALUE(activity_insights[intensity_text], "Select one activity")
+		lineageTag: 2bf7927c-3ddb-40c9-b4dd-99e12206888c
+
+	measure 'Insight Pacing' = SELECTEDVALUE(activity_insights[pacing_text], "-")
+		lineageTag: aaec423b-a1fe-4446-946c-1b1bee134d14
+
+	measure 'Insight Heart Rate' = SELECTEDVALUE(activity_insights[heart_rate_text], "-")
+		lineageTag: c27162bb-b1fa-4e9c-abe2-cb3da3874340
+
+	measure 'Insight Fastest' = SELECTEDVALUE(activity_insights[fastest_text], "-")
+		lineageTag: 4a0e27b7-5bc0-4d1c-937d-524dd519dea4
+
+	measure 'Insight Climbing' = SELECTEDVALUE(activity_insights[climb_text], "-")
+		lineageTag: 2fc4cdc4-7ae2-489f-9fdb-70f2a1ee1e37
+
+	measure 'Insight Best Effort' = SELECTEDVALUE(activity_insights[best_effort_text], "-")
+		lineageTag: 365a4589-cf37-4274-a48b-0a9f5b7a7bf4
+
+	/// All plain-language findings for the selected activity as one bulleted text.
+	measure 'Activity Story' =
+			IF(
+			    HASONEVALUE(activities[workout_key]),
+			    VAR _items = {
+			        (1, [Insight Intensity]), (2, [Insight Pacing]), (3, [Insight Heart Rate]),
+			        (4, [Insight Fastest]), (5, [Insight Climbing]), (6, [Insight Best Effort])
+			    }
+			    VAR _known = FILTER(_items, NOT ISBLANK([Value2]) && LEFT([Value2], 3) <> "No ")
+			    RETURN
+			        IF(
+			            COUNTROWS(_known) = 0,
+			            "Not enough sensor data (distance, heart rate or power) for insights on this activity.",
+			            CONCATENATEX(_known, "•  " & [Value2], UNICHAR(10), [Value1], ASC)
+			        ),
+			    "Select one activity to see what it tells you."
+			)
+		displayFolder: Activities
+		lineageTag: d3b1c53c-23c8-4696-ab20-3f45599f0699
+
+	column workout_key
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(8000)
+		lineageTag: 50ed8c38-4ef0-40aa-ba13-649197e5cd5e
+		sourceLineageTag: workout_key
+		summarizeBy: none
+		sourceColumn: workout_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column intensity_text
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 347f2c28-aeb0-4e5a-a4c2-18e8e93d9ef5
+		sourceLineageTag: intensity_text
+		summarizeBy: none
+		sourceColumn: intensity_text
+
+		annotation SummarizationSetBy = Automatic
+
+	column pacing_text
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 87a408ed-45ab-4a36-881f-d59b719b0fb8
+		sourceLineageTag: pacing_text
+		summarizeBy: none
+		sourceColumn: pacing_text
+
+		annotation SummarizationSetBy = Automatic
+
+	column heart_rate_text
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: a3d90fb2-9ddc-4d09-85e9-efe858403f29
+		sourceLineageTag: heart_rate_text
+		summarizeBy: none
+		sourceColumn: heart_rate_text
+
+		annotation SummarizationSetBy = Automatic
+
+	column fastest_text
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 421c9f5b-a6df-4296-be6d-b4719cc86799
+		sourceLineageTag: fastest_text
+		summarizeBy: none
+		sourceColumn: fastest_text
+
+		annotation SummarizationSetBy = Automatic
+
+	column climb_text
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: a2d50a22-cd2c-4130-8a1a-8a71659b38b1
+		sourceLineageTag: climb_text
+		summarizeBy: none
+		sourceColumn: climb_text
+
+		annotation SummarizationSetBy = Automatic
+
+	column best_effort_text
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: f814f0dd-5931-4191-a311-8e33065f6080
+		sourceLineageTag: best_effort_text
+		summarizeBy: none
+		sourceColumn: best_effort_text
+
+		annotation SummarizationSetBy = Automatic
+
+	partition activity_insights = entity
+		mode: directLake
+		source
+			entityName: FactWorkoutInsight
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

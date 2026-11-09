@@ -1,0 +1,145 @@
+table activity_sections
+	lineageTag: d05699c7-2421-49cb-982f-8ed8e20378d1
+	sourceLineageTag: [dbo].[FactWorkoutSection]
+
+	measure 'Section Speed km/h' = AVERAGE(activity_sections[avg_speed_kmh])
+		formatString: 0.0
+		lineageTag: 6bb5477e-a85c-410c-91d2-0bae1b532c2b
+
+	measure 'Section Heart Rate' = AVERAGE(activity_sections[avg_heart_rate_bpm])
+		formatString: 0
+		lineageTag: 8cb19a74-4b79-4116-8c86-907eb201eca4
+
+	measure 'Section Climb m' = SUM(activity_sections[elevation_gain_m])
+		formatString: 0
+		lineageTag: 7d5e26a7-6218-4120-b3a7-04c9d243a3d6
+
+	column workout_key
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(8000)
+		lineageTag: 4f1cd823-f6f0-4ac3-8e6d-b34ec275a8d5
+		sourceLineageTag: workout_key
+		summarizeBy: none
+		sourceColumn: workout_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column section_index
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 2cb0cc8d-ef9b-4d23-acbe-66c1abed5e5b
+		sourceLineageTag: section_index
+		summarizeBy: none
+		sourceColumn: section_index
+
+		annotation SummarizationSetBy = Automatic
+
+	column section_label
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: f7a472e7-587f-4f09-9880-6be4a15e02a1
+		sourceLineageTag: section_label
+		summarizeBy: none
+		sourceColumn: section_label
+		sortByColumn: section_index
+
+		annotation SummarizationSetBy = Automatic
+
+	column section_size_km
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: dadadd02-bf88-4b81-b022-b9a6bf4b645c
+		sourceLineageTag: section_size_km
+		summarizeBy: none
+		sourceColumn: section_size_km
+
+		annotation SummarizationSetBy = Automatic
+
+	column distance_km
+		dataType: double
+		formatString: 0.0
+		sourceProviderType: float
+		lineageTag: 053f9262-2b3f-4477-9c5e-2c04cb3b563b
+		sourceLineageTag: distance_km
+		summarizeBy: none
+		sourceColumn: distance_km
+
+		annotation SummarizationSetBy = Automatic
+
+	column moving_time_label
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 9b798f11-4bef-41a6-9255-825f7ad647fd
+		sourceLineageTag: moving_time_label
+		summarizeBy: none
+		sourceColumn: moving_time_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_speed_kmh
+		dataType: double
+		formatString: 0.0
+		sourceProviderType: float
+		lineageTag: 691c018b-40bc-4a98-846a-4e15407424ec
+		sourceLineageTag: avg_speed_kmh
+		summarizeBy: none
+		sourceColumn: avg_speed_kmh
+
+		annotation SummarizationSetBy = Automatic
+
+	column pace_label
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 11553536-5f7f-446b-b3dc-cafbea84021d
+		sourceLineageTag: pace_label
+		summarizeBy: none
+		sourceColumn: pace_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_heart_rate_bpm
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: f82157f3-c754-4ad6-a39f-72fa2e2ac8ff
+		sourceLineageTag: avg_heart_rate_bpm
+		summarizeBy: none
+		sourceColumn: avg_heart_rate_bpm
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_power_w
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 2dabeb25-a264-4f00-9a3f-9cf617f861c2
+		sourceLineageTag: avg_power_w
+		summarizeBy: none
+		sourceColumn: avg_power_w
+
+		annotation SummarizationSetBy = Automatic
+
+	column elevation_gain_m
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 1ea1e663-058b-4a24-86ee-3df242827f56
+		sourceLineageTag: elevation_gain_m
+		summarizeBy: none
+		sourceColumn: elevation_gain_m
+
+		annotation SummarizationSetBy = Automatic
+
+	partition activity_sections = entity
+		mode: directLake
+		source
+			entityName: FactWorkoutSection
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

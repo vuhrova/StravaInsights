@@ -1,0 +1,150 @@
+table DataQualityCheck
+	lineageTag: 6f97dd7f-7362-4658-be07-b74792a2c22a
+	sourceLineageTag: [dbo].[DataQualityCheck]
+
+	measure 'Data Checks' = COUNTROWS(DataQualityCheck)
+		formatString: 0
+		displayFolder: Data health
+		lineageTag: a1e9072e-28d3-421a-9925-bdb26146b7f3
+
+	/// Font color for a data check result (fail / warn / pass).
+	measure 'Result Color' =
+			SWITCH(SELECTEDVALUE(DataQualityCheck[status]),
+			    "fail", "#DC2626", "warn", "#B45309", "pass", "#15803D", "#64748B")
+		displayFolder: Data health
+		lineageTag: 37a76c5e-605d-4de3-8ee5-ee976f4ee0fe
+
+	column run_id
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(8000)
+		lineageTag: 457f916d-44b8-49b6-8df9-87b50fc0f43f
+		sourceLineageTag: run_id
+		summarizeBy: none
+		sourceColumn: run_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column checked_at
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 567d09d4-7efb-4c03-a2f1-8f241417276d
+		sourceLineageTag: checked_at
+		summarizeBy: none
+		sourceColumn: checked_at
+
+		annotation SummarizationSetBy = Automatic
+
+	column Category
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 00e8b3f0-96a7-45a6-9340-aaac446824ee
+		sourceLineageTag: category
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column Check
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 981c32b5-6ec9-4ac8-8375-eeb0c1ae862a
+		sourceLineageTag: check_name
+		summarizeBy: none
+		sourceColumn: check_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'What is checked'
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 325e6bed-3faf-4505-ab48-6822e63210fb
+		sourceLineageTag: description
+		summarizeBy: none
+		sourceColumn: description
+
+		annotation SummarizationSetBy = Automatic
+
+	column Severity
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 4814e57c-7c0d-4b2c-9226-72a6c1cdc191
+		sourceLineageTag: severity
+		summarizeBy: none
+		sourceColumn: severity
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(8000)
+		lineageTag: e48c879f-5ee8-4ab5-b122-d83aeb586333
+		sourceLineageTag: status
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column Result
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 3d1baa92-1beb-42f7-87cc-832400c3d002
+		sourceLineageTag: status_label
+		summarizeBy: none
+		sourceColumn: status_label
+		sortByColumn: status_sort
+
+		annotation SummarizationSetBy = Automatic
+
+	column status_sort
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 5af27cc9-8384-4792-aa6e-7a7f8a6fdd5a
+		sourceLineageTag: status_sort
+		summarizeBy: none
+		sourceColumn: status_sort
+
+		annotation SummarizationSetBy = Automatic
+
+	column Observed
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: ba8004de-40ad-478f-b3ab-18578763c529
+		sourceLineageTag: observed
+		summarizeBy: none
+		sourceColumn: observed
+
+		annotation SummarizationSetBy = Automatic
+
+	column Expected
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 62d976df-52ba-48b6-bb6a-309aed527b33
+		sourceLineageTag: expected
+		summarizeBy: none
+		sourceColumn: expected
+
+		annotation SummarizationSetBy = Automatic
+
+	column Detail
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 796eb12f-e364-40e2-acec-5b1470d9cb2a
+		sourceLineageTag: detail
+		summarizeBy: none
+		sourceColumn: detail
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DataQualityCheck = entity
+		mode: directLake
+		source
+			entityName: DataQualityCheck
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table

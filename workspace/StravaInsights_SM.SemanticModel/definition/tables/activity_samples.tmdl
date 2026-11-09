@@ -1,0 +1,144 @@
+table activity_samples
+	lineageTag: 2c10fadb-05a6-4a8d-a953-e81c41178351
+	sourceLineageTag: [dbo].[FactWorkoutSample]
+
+	measure 'Heart Rate bpm' = AVERAGE(activity_samples[heart_rate_bpm])
+		formatString: 0
+		lineageTag: 4126091a-eab8-4de7-847c-2d7963e179e3
+
+	measure 'Power W' = AVERAGE(activity_samples[power_w])
+		formatString: 0
+		lineageTag: a4f77a7e-2c8f-46e8-b2b3-a84839a88f19
+
+	measure 'Speed km/h' = AVERAGE(activity_samples[speed_kmh])
+		formatString: 0.0
+		lineageTag: 7a30a599-e388-4424-b9f1-34574d2fd38e
+
+	measure 'Altitude m' = AVERAGE(activity_samples[altitude_m])
+		formatString: 0
+		lineageTag: e7c1dc47-3e9c-4a54-8230-5be4539e0419
+
+	measure 'Cadence rpm' = AVERAGE(activity_samples[cadence])
+		formatString: 0
+		lineageTag: 86fbd938-f7b8-470e-996e-c375f5663c8c
+
+	column workout_key
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(8000)
+		lineageTag: effcd5d8-5573-4891-8398-836cc011ca8c
+		sourceLineageTag: workout_key
+		summarizeBy: none
+		sourceColumn: workout_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column elapsed_s
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 85c36c49-5017-40f3-9196-1271306dd225
+		sourceLineageTag: elapsed_s
+		summarizeBy: none
+		sourceColumn: elapsed_s
+
+		annotation SummarizationSetBy = Automatic
+
+	column elapsed_min
+		dataType: double
+		formatString: 0.0
+		sourceProviderType: float
+		lineageTag: e2a63c7e-9bc1-4411-a10b-a8eb78e9fec5
+		sourceLineageTag: elapsed_min
+		summarizeBy: none
+		sourceColumn: elapsed_min
+
+		annotation SummarizationSetBy = Automatic
+
+	column distance_km
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: float
+		lineageTag: 04a8eaaa-6584-4e84-a741-36e8556093d4
+		sourceLineageTag: distance_km
+		summarizeBy: none
+		sourceColumn: distance_km
+
+		annotation SummarizationSetBy = Automatic
+
+	column heart_rate_bpm
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: a592c2b1-9249-4269-9a31-b12bd661eede
+		sourceLineageTag: heart_rate_bpm
+		summarizeBy: none
+		sourceColumn: heart_rate_bpm
+
+		annotation SummarizationSetBy = Automatic
+
+	column power_w
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: eb518394-6564-47b4-b3ab-19e08d01d9e4
+		sourceLineageTag: power_w
+		summarizeBy: none
+		sourceColumn: power_w
+
+		annotation SummarizationSetBy = Automatic
+
+	column speed_kmh
+		dataType: double
+		formatString: 0.0
+		sourceProviderType: float
+		lineageTag: 19183a74-c930-4eaa-8b2c-9091dd4092eb
+		sourceLineageTag: speed_kmh
+		summarizeBy: none
+		sourceColumn: speed_kmh
+
+		annotation SummarizationSetBy = Automatic
+
+	column cadence
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 20236c07-06f6-4619-bf31-63e4b1795486
+		sourceLineageTag: cadence
+		summarizeBy: none
+		sourceColumn: cadence
+
+		annotation SummarizationSetBy = Automatic
+
+	column altitude_m
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 6955125a-a7b7-422e-9593-56563ed598bf
+		sourceLineageTag: altitude_m
+		summarizeBy: none
+		sourceColumn: altitude_m
+
+		annotation SummarizationSetBy = Automatic
+
+	column grade_pct
+		dataType: double
+		formatString: 0.0
+		sourceProviderType: float
+		lineageTag: b9607c1c-c38b-4c83-b9d2-dc7655549dfa
+		sourceLineageTag: grade_pct
+		summarizeBy: none
+		sourceColumn: grade_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	partition activity_samples = entity
+		mode: directLake
+		source
+			entityName: FactWorkoutSample
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

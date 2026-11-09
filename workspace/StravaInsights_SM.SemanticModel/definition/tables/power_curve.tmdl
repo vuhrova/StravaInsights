@@ -1,0 +1,105 @@
+table power_curve
+	lineageTag: 6600e99b-5bb3-4a74-8373-f08469d7141c
+	sourceLineageTag: [dbo].[FactPowerCurveYear]
+
+	measure 'Best Power W' = MAX(power_curve[best_power_w])
+		formatString: 0
+		lineageTag: 8e83b26d-eaae-4df8-8a22-21cf8f8e9c6c
+
+	column year
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 17ee9ba4-7136-4357-9c78-4c1e6564521e
+		sourceLineageTag: year
+		summarizeBy: none
+		sourceColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column year_label
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 4bbe5d31-b2ac-47a9-9e00-cb744b02dfe1
+		sourceLineageTag: year_label
+		summarizeBy: none
+		sourceColumn: year_label
+		sortByColumn: year
+
+		annotation SummarizationSetBy = Automatic
+
+	column duration_s
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 138b1a9f-f956-4193-8948-85a9c80de38b
+		sourceLineageTag: duration_s
+		summarizeBy: none
+		sourceColumn: duration_s
+
+		annotation SummarizationSetBy = Automatic
+
+	column duration_label
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: c37e8ad2-e12f-457e-ab90-d9530ada75c5
+		sourceLineageTag: duration_label
+		summarizeBy: none
+		sourceColumn: duration_label
+		sortByColumn: duration_s
+
+		annotation SummarizationSetBy = Automatic
+
+	column best_power_w
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 4f20cb33-0a4d-4fd7-a313-748efe23fad4
+		sourceLineageTag: best_power_w
+		summarizeBy: none
+		sourceColumn: best_power_w
+
+		annotation SummarizationSetBy = Automatic
+
+	column effort_date
+		dataType: dateTime
+		formatString: Short Date
+		sourceProviderType: date
+		lineageTag: 18440426-489d-4066-8724-22ed11533a23
+		sourceLineageTag: effort_date
+		summarizeBy: none
+		sourceColumn: effort_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column workout_name
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 5de8821c-3665-447a-b1b1-60aa36750cf0
+		sourceLineageTag: workout_name
+		summarizeBy: none
+		sourceColumn: workout_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_all_time_best
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: 2962cbd1-95af-4b8c-affb-493a2991c423
+		sourceLineageTag: is_all_time_best
+		summarizeBy: none
+		sourceColumn: is_all_time_best
+
+		annotation SummarizationSetBy = Automatic
+
+	partition power_curve = entity
+		mode: directLake
+		source
+			entityName: FactPowerCurveYear
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

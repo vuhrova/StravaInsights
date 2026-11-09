@@ -1,0 +1,104 @@
+table activity_zones
+	lineageTag: 1790d264-b682-4b34-83f4-a769b16dd522
+	sourceLineageTag: [dbo].[FactWorkoutZoneTime]
+
+	measure 'Zone Minutes' = SUM(activity_zones[minutes])
+		formatString: 0.0
+		lineageTag: 4713c583-47af-4e6b-9726-4e073c6e3fc3
+
+	column workout_key
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(8000)
+		lineageTag: 35605840-2a45-4d03-9cdb-bb76e39aeb70
+		sourceLineageTag: workout_key
+		summarizeBy: none
+		sourceColumn: workout_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column zone_type
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: cbbdff2d-bdd2-474d-b50c-b25b43a0aa99
+		sourceLineageTag: zone_type
+		summarizeBy: none
+		sourceColumn: zone_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column zone_number
+		dataType: int64
+		isHidden
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 77934779-4ae5-4b30-bdf3-22979df240b4
+		sourceLineageTag: zone_number
+		summarizeBy: none
+		sourceColumn: zone_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column zone_label
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 523ff0a7-aa09-48e0-aae2-8eb47e2f8902
+		sourceLineageTag: zone_label
+		summarizeBy: none
+		sourceColumn: zone_label
+		sortByColumn: zone_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column zone_name
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 7dda6fd9-3bf4-48e8-ba8f-58bb8606f044
+		sourceLineageTag: zone_name
+		summarizeBy: none
+		sourceColumn: zone_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column minutes
+		dataType: double
+		formatString: 0.0
+		sourceProviderType: float
+		lineageTag: e1fceefb-358a-474a-941e-7a67442dc7fd
+		sourceLineageTag: minutes
+		summarizeBy: none
+		sourceColumn: minutes
+
+		annotation SummarizationSetBy = Automatic
+
+	column pct_of_zone_time
+		dataType: double
+		formatString: 0.0
+		sourceProviderType: float
+		lineageTag: e0fa18e1-56e9-441a-8739-5e450510597b
+		sourceLineageTag: pct_of_zone_time
+		summarizeBy: none
+		sourceColumn: pct_of_zone_time
+
+		annotation SummarizationSetBy = Automatic
+
+	column zone_display
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: b8d1a8c2-8e78-4d0f-921a-505e2086f0f3
+		sourceLineageTag: zone_display
+		summarizeBy: none
+		sourceColumn: zone_display
+		sortByColumn: zone_number
+
+		annotation SummarizationSetBy = Automatic
+
+	partition activity_zones = entity
+		mode: directLake
+		source
+			entityName: FactWorkoutZoneTime
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

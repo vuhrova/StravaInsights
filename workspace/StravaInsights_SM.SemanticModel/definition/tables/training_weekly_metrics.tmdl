@@ -1,0 +1,332 @@
+table training_weekly_metrics
+	lineageTag: 5e90cb1b-b65a-4906-a800-82b926a9ab9e
+	sourceLineageTag: [dbo].[FactTrainingWeek]
+
+	measure 'Weekly Training Load' = SUM(training_weekly_metrics[training_load])
+		formatString: 0
+		lineageTag: bd61ac1a-35e6-4aad-a624-d40c9f58d846
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Weekly Training Hours' = SUM(training_weekly_metrics[training_hours])
+		formatString: 0.00
+		lineageTag: 527f2c48-1d5a-4408-9fef-261f76a66845
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Weekly Distance km' = SUM(training_weekly_metrics[distance_km])
+		formatString: 0.00
+		lineageTag: 040715f2-c578-4ba6-a83a-228e77de2076
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '4W Avg Load' = AVERAGE(training_weekly_metrics[load_4w_avg])
+		formatString: 0.0
+		lineageTag: 4484860f-4653-4997-9d16-09e07b8a5a71
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Ramp Rate %' = AVERAGE(training_weekly_metrics[load_change_pct])
+		formatString: 0.0
+		lineageTag: d55b5030-ad80-4fa8-92c5-c5c0388fb7dd
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Easy Hours' = SUM(training_weekly_metrics[easy_hours])
+		formatString: 0.00
+		lineageTag: e635ab88-9bef-45aa-9247-1eed7d600635
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Tempo Hours' = SUM(training_weekly_metrics[tempo_hours])
+		formatString: 0.00
+		lineageTag: 9da6863e-fa05-4c1a-857c-197e9b2a4bfc
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Hard Hours' = SUM(training_weekly_metrics[hard_hours])
+		formatString: 0.00
+		lineageTag: f767dd8b-d97c-489e-968c-c6c296a8bd0d
+
+		changedProperty = Name
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column week_start
+		dataType: dateTime
+		sourceProviderType: date
+		lineageTag: f17d0414-5ebf-4305-8ae0-c95ac1b24e0d
+		sourceLineageTag: week_start
+		summarizeBy: none
+		sourceColumn: week_start
+
+		annotation SummarizationSetBy = Automatic
+
+	column workouts
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 580c8ec2-5c4b-48f7-a4d5-d54e6a8939b7
+		sourceLineageTag: workouts
+		summarizeBy: sum
+		sourceColumn: workouts
+
+		annotation SummarizationSetBy = Automatic
+
+	column distance_km
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 255b584c-1442-40ad-9573-5dcb4371e69e
+		sourceLineageTag: distance_km
+		summarizeBy: sum
+		sourceColumn: distance_km
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column training_hours
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 24099fc8-93ca-4d02-91fb-138775974382
+		sourceLineageTag: training_hours
+		summarizeBy: sum
+		sourceColumn: training_hours
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column elevation_gain_m
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 60a432f3-510c-4920-ab8d-f0ee33ce9abf
+		sourceLineageTag: elevation_gain_m
+		summarizeBy: sum
+		sourceColumn: elevation_gain_m
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column avg_heart_rate
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 91059dd6-c3c5-4d72-8c1e-bc48dc6ae7d8
+		sourceLineageTag: avg_heart_rate
+		summarizeBy: sum
+		sourceColumn: avg_heart_rate
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column avg_watts
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 8c8210a9-b7ef-4262-b5fd-fca535e52209
+		sourceLineageTag: avg_watts
+		summarizeBy: sum
+		sourceColumn: avg_watts
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column training_load
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 2d15eb09-2f17-4315-80f2-a24881053071
+		sourceLineageTag: training_load
+		summarizeBy: sum
+		sourceColumn: training_load
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column load_4w_avg
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 06276063-d8b3-4658-9807-d35bb9219951
+		sourceLineageTag: load_4w_avg
+		summarizeBy: sum
+		sourceColumn: load_4w_avg
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column load_change_pct
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 5b41e190-d335-4064-868f-d4f7307f374c
+		sourceLineageTag: load_change_pct
+		summarizeBy: sum
+		sourceColumn: load_change_pct
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column readiness_flag
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 34360025-823e-462f-9726-2590c3a6a1c7
+		sourceLineageTag: readiness_flag
+		summarizeBy: none
+		sourceColumn: readiness_flag
+
+		annotation SummarizationSetBy = Automatic
+
+	column kilojoules
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 5d8cda5f-50e2-41be-856f-208c899084f7
+		sourceLineageTag: kilojoules
+		summarizeBy: sum
+		sourceColumn: kilojoules
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column optimal_carbs_g
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 2ca4fcb2-cc8b-4bec-896e-38142f154f34
+		sourceLineageTag: optimal_carbs_g
+		summarizeBy: sum
+		sourceColumn: optimal_carbs_g
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column rides
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 8431dfba-434c-4db2-b78f-99f38e69f14c
+		sourceLineageTag: rides
+		summarizeBy: sum
+		sourceColumn: rides
+
+		annotation SummarizationSetBy = Automatic
+
+	column runs
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 051320f4-fb4a-4816-a88f-982663343895
+		sourceLineageTag: runs
+		summarizeBy: sum
+		sourceColumn: runs
+
+		annotation SummarizationSetBy = Automatic
+
+	column swims
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 65ceec8b-e378-4f17-b2ee-97b3a9a3b1fa
+		sourceLineageTag: swims
+		summarizeBy: sum
+		sourceColumn: swims
+
+		annotation SummarizationSetBy = Automatic
+
+	column strength_workouts
+		dataType: int64
+		formatString: 0
+		sourceProviderType: bigint
+		lineageTag: 80fe8c15-afa9-4d39-996a-c4a5c96bdd3f
+		sourceLineageTag: strength_workouts
+		summarizeBy: sum
+		sourceColumn: strength_workouts
+
+		annotation SummarizationSetBy = Automatic
+
+	column easy_hours
+		dataType: double
+		sourceProviderType: float
+		lineageTag: c526c7ff-d46b-42b1-bfb6-1c72cf787103
+		sourceLineageTag: easy_hours
+		summarizeBy: sum
+		sourceColumn: easy_hours
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column tempo_hours
+		dataType: double
+		sourceProviderType: float
+		lineageTag: c6ccda5d-21c1-490b-acd0-8cfac31c22c3
+		sourceLineageTag: tempo_hours
+		summarizeBy: sum
+		sourceColumn: tempo_hours
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column hard_hours
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 91fc6086-4ce2-4b6a-9738-e6c6c1346855
+		sourceLineageTag: hard_hours
+		summarizeBy: sum
+		sourceColumn: hard_hours
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column hours_4w_avg
+		dataType: double
+		sourceProviderType: float
+		lineageTag: c7c4779a-e1c5-4dc9-8f99-27b518059ad4
+		sourceLineageTag: hours_4w_avg
+		summarizeBy: sum
+		sourceColumn: hours_4w_avg
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column distance_4w_avg
+		dataType: double
+		sourceProviderType: float
+		lineageTag: 2c8963b2-a426-4660-bb7d-db4c74ed32de
+		sourceLineageTag: distance_4w_avg
+		summarizeBy: sum
+		sourceColumn: distance_4w_avg
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition training_weekly_metrics = entity
+		mode: directLake
+		source
+			entityName: FactTrainingWeek
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

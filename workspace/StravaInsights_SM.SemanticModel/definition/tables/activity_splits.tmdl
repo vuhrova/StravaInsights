@@ -1,0 +1,185 @@
+table activity_splits
+	lineageTag: d08f9337-2b43-4938-86b2-78bf365f3337
+	sourceLineageTag: [dbo].[FactWorkoutSegment]
+
+	column workout_key
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(8000)
+		lineageTag: 716d6966-4d82-4791-99c1-226fb1b30a1a
+		sourceLineageTag: workout_key
+		summarizeBy: none
+		sourceColumn: workout_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column segment_type
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 6af874ed-6e6b-4388-805b-a6b127ff3569
+		sourceLineageTag: segment_type
+		summarizeBy: none
+		sourceColumn: segment_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column segment_index
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 4f53c542-84c4-4f53-b87c-685784b1a318
+		sourceLineageTag: segment_index
+		summarizeBy: none
+		sourceColumn: segment_index
+
+		annotation SummarizationSetBy = Automatic
+
+	column segment_name
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: efdd2677-c226-4096-abbb-3ba74e287732
+		sourceLineageTag: segment_name
+		summarizeBy: none
+		sourceColumn: segment_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column distance_km
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: float
+		lineageTag: 8bfbdedb-2033-45ed-a712-44d477247f0d
+		sourceLineageTag: distance_km
+		summarizeBy: none
+		sourceColumn: distance_km
+
+		annotation SummarizationSetBy = Automatic
+
+	column moving_min
+		dataType: double
+		formatString: 0.0
+		sourceProviderType: float
+		lineageTag: 45ab66c9-04f8-4030-ae56-3cd08e7f0b3f
+		sourceLineageTag: moving_min
+		summarizeBy: none
+		sourceColumn: moving_min
+
+		annotation SummarizationSetBy = Automatic
+
+	column moving_time_label
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 5446ac1a-2e74-4426-a79f-4a34f8d53e37
+		sourceLineageTag: moving_time_label
+		summarizeBy: none
+		sourceColumn: moving_time_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column pace_min_per_km
+		dataType: double
+		formatString: 0.00
+		sourceProviderType: float
+		lineageTag: 03d0ae5e-b7bc-4020-9389-2a908ded2f00
+		sourceLineageTag: pace_min_per_km
+		summarizeBy: none
+		sourceColumn: pace_min_per_km
+
+		annotation SummarizationSetBy = Automatic
+
+	column pace_label
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 7a7a580d-9a5b-49f4-b65d-3409c0e3b1a3
+		sourceLineageTag: pace_label
+		summarizeBy: none
+		sourceColumn: pace_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column speed_kmh
+		dataType: double
+		formatString: 0.0
+		sourceProviderType: float
+		lineageTag: 465a8878-1dad-4cda-90bd-e2e91e07bd0d
+		sourceLineageTag: speed_kmh
+		summarizeBy: none
+		sourceColumn: speed_kmh
+
+		annotation SummarizationSetBy = Automatic
+
+	column grade_adjusted_speed_kmh
+		dataType: double
+		formatString: 0.0
+		sourceProviderType: float
+		lineageTag: 1b694c89-b7d7-4809-90cc-83baf644c526
+		sourceLineageTag: grade_adjusted_speed_kmh
+		summarizeBy: none
+		sourceColumn: grade_adjusted_speed_kmh
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_heart_rate_bpm
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 8a65ab94-d86d-4650-9915-308fc3a3818f
+		sourceLineageTag: avg_heart_rate_bpm
+		summarizeBy: none
+		sourceColumn: avg_heart_rate_bpm
+
+		annotation SummarizationSetBy = Automatic
+
+	column max_heart_rate_bpm
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 333c22f8-2099-47ec-8d08-ac6379592d78
+		sourceLineageTag: max_heart_rate_bpm
+		summarizeBy: none
+		sourceColumn: max_heart_rate_bpm
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_power_w
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 69e1cd6a-7d2d-49c1-b9e1-9ff1c011295a
+		sourceLineageTag: avg_power_w
+		summarizeBy: none
+		sourceColumn: avg_power_w
+
+		annotation SummarizationSetBy = Automatic
+
+	column avg_cadence
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: 0913d2d6-29ab-40c7-8906-baac5567c9ff
+		sourceLineageTag: avg_cadence
+		summarizeBy: none
+		sourceColumn: avg_cadence
+
+		annotation SummarizationSetBy = Automatic
+
+	column elevation_m
+		dataType: double
+		formatString: 0
+		sourceProviderType: float
+		lineageTag: c357201b-6c0a-4e23-8a2f-bb8579af7325
+		sourceLineageTag: elevation_m
+		summarizeBy: none
+		sourceColumn: elevation_m
+
+		annotation SummarizationSetBy = Automatic
+
+	partition activity_splits = entity
+		mode: directLake
+		source
+			entityName: FactWorkoutSegment
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
+

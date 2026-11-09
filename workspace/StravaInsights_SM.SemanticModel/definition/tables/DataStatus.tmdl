@@ -1,0 +1,204 @@
+table DataStatus
+	lineageTag: 974a58c8-a558-4bd4-b99a-dcc0c220a381
+	sourceLineageTag: [dbo].[DataStatus]
+
+	/// One-line data status shown at the bottom of every page.
+	measure 'Data Status Line' =
+			VAR _latest = MAX(DataStatus[latest_workout_date])
+			VAR _sync = MAX(DataStatus[last_sync_utc])
+			VAR _passed = MAX(DataStatus[checks_passed])
+			VAR _evaluated = MAX(DataStatus[checks_evaluated])
+			RETURN
+			    IF(ISBLANK(_sync), "Waiting for the first data load",
+			        "Data as of " & FORMAT(_latest, "d MMM yyyy")
+			        & "  ·  Synced " & FORMAT(_sync, "d MMM HH:mm") & " UTC"
+			        & "  ·  " & FORMAT(_passed, "0") & "/" & FORMAT(_evaluated, "0") & " data checks passed"
+			        & IF(MAX(DataStatus[checks_failed]) > 0, "  ·  " & MAX(DataStatus[status_text]), ""))
+		displayFolder: Data health
+		lineageTag: b3feef2d-600d-4f6d-8d1c-15f927f301ed
+
+	measure 'Data Health' = SELECTEDVALUE(DataStatus[overall_status], "Not checked")
+		displayFolder: Data health
+		lineageTag: e09188be-3694-467a-824f-2416f2c491ba
+
+	/// Finish time of the last successful Strava sync (UTC).
+	measure 'Last Sync' = VAR _s = MAX(DataStatus[last_sync_utc]) RETURN IF(ISBLANK(_s), "Never", FORMAT(_s, "d MMM HH:mm") & " UTC")
+		displayFolder: Data health
+		lineageTag: b5d73126-61d9-4a02-903f-1fa64efde236
+
+	measure 'Latest Workout' = FORMAT(MAX(DataStatus[latest_workout_date]), "d MMM yyyy")
+		displayFolder: Data health
+		lineageTag: 1570c01f-6aab-4f03-bbf4-c12e76e8d9aa
+
+	measure 'Checks Passed' = MAX(DataStatus[checks_passed])
+		formatString: 0
+		displayFolder: Data health
+		lineageTag: 2d59263f-41f9-4a75-afd8-c4e0090e5f39
+
+	measure 'Checks Warning' = MAX(DataStatus[checks_warning])
+		formatString: 0
+		displayFolder: Data health
+		lineageTag: f61d431a-4ebc-4b16-a4a5-3ea5b155a9c2
+
+	measure 'Checks Failed' = MAX(DataStatus[checks_failed])
+		formatString: 0
+		displayFolder: Data health
+		lineageTag: 9cc48fd4-d9de-403b-be8b-9eb56c5da741
+
+	/// Detailed activity data still to download; Strava's API limits spread a long history over several daily runs.
+	measure 'History Backfill' =
+			VAR _d = MAX(DataStatus[details_to_backfill])
+			VAR _s = MAX(DataStatus[streams_to_backfill])
+			RETURN IF(ISBLANK(_d), "-", IF(_d + _s = 0, "Complete", FORMAT(_d + _s, "#,0") & " to go"))
+		displayFolder: Data health
+		lineageTag: 229e3e3a-5591-4c3b-a77f-63f5c7852635
+
+	column run_id
+		dataType: string
+		isHidden
+		sourceProviderType: varchar(8000)
+		lineageTag: e30b2fd5-5dfa-4f3a-b56e-04e7e3a97d35
+		sourceLineageTag: run_id
+		summarizeBy: none
+		sourceColumn: run_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column checked_at
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: ef04767b-71a2-4b25-8d9a-863a1dcd501e
+		sourceLineageTag: checked_at
+		summarizeBy: none
+		sourceColumn: checked_at
+
+		annotation SummarizationSetBy = Automatic
+
+	column last_sync_utc
+		dataType: dateTime
+		formatString: General Date
+		sourceProviderType: datetime2
+		lineageTag: 740b766b-acf8-4954-8b8b-c512fe113500
+		sourceLineageTag: last_sync_utc
+		summarizeBy: none
+		sourceColumn: last_sync_utc
+
+		annotation SummarizationSetBy = Automatic
+
+	column latest_workout_date
+		dataType: dateTime
+		formatString: Short Date
+		sourceProviderType: date
+		lineageTag: a61e2852-293f-45d9-af12-6722711539fa
+		sourceLineageTag: latest_workout_date
+		summarizeBy: none
+		sourceColumn: latest_workout_date
+
+		annotation SummarizationSetBy = Automatic
+
+	column checks_total
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 16fbc43f-523d-41cd-9e33-66443942afba
+		sourceLineageTag: checks_total
+		summarizeBy: none
+		sourceColumn: checks_total
+
+		annotation SummarizationSetBy = Automatic
+
+	column checks_passed
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 049d1c97-2bff-41ce-8571-35aed936295c
+		sourceLineageTag: checks_passed
+		summarizeBy: none
+		sourceColumn: checks_passed
+
+		annotation SummarizationSetBy = Automatic
+
+	column checks_warning
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: e8f55dc5-0970-4902-bf79-a084fcf575db
+		sourceLineageTag: checks_warning
+		summarizeBy: none
+		sourceColumn: checks_warning
+
+		annotation SummarizationSetBy = Automatic
+
+	column checks_failed
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: b9d89296-d878-4624-a5b1-20bd71af7613
+		sourceLineageTag: checks_failed
+		summarizeBy: none
+		sourceColumn: checks_failed
+
+		annotation SummarizationSetBy = Automatic
+
+	column checks_evaluated
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 148cc48e-0c86-42c4-848d-4c9c040a0f11
+		sourceLineageTag: checks_evaluated
+		summarizeBy: none
+		sourceColumn: checks_evaluated
+
+		annotation SummarizationSetBy = Automatic
+
+	column overall_status
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 73c15fab-aec9-4c84-ba6e-76a3a186d15a
+		sourceLineageTag: overall_status
+		summarizeBy: none
+		sourceColumn: overall_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column status_text
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 12e3e907-ceab-44ff-9d56-ab60da8e7015
+		sourceLineageTag: status_text
+		summarizeBy: none
+		sourceColumn: status_text
+
+		annotation SummarizationSetBy = Automatic
+
+	column details_to_backfill
+		dataType: int64
+		formatString: #,0
+		sourceProviderType: bigint
+		lineageTag: aab435d8-eca7-4a87-9db5-aad2807b56e5
+		sourceLineageTag: details_to_backfill
+		summarizeBy: none
+		sourceColumn: details_to_backfill
+
+		annotation SummarizationSetBy = Automatic
+
+	column streams_to_backfill
+		dataType: int64
+		formatString: #,0
+		sourceProviderType: bigint
+		lineageTag: 3ba630b2-98fc-4e35-b51e-2ad4338edd5d
+		sourceLineageTag: streams_to_backfill
+		summarizeBy: none
+		sourceColumn: streams_to_backfill
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DataStatus = entity
+		mode: directLake
+		source
+			entityName: DataStatus
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table

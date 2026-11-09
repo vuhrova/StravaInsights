@@ -1,0 +1,193 @@
+table FactBiometric
+	lineageTag: 69e9c645-55b7-4a07-938a-bdd01c789698
+	sourceLineageTag: [dbo].[FactBiometric]
+
+	/// Device VO2max when available, otherwise the best estimate (running VDOT or cycling ACSM) in the selected period. Prefer the sport-specific measures.
+	measure VO2max = COALESCE(CALCULATE(MAX(FactBiometric[value]), FactBiometric[metric_code] = "vo2max_ml_kg_min", FactBiometric[is_estimate] = FALSE()), CALCULATE(MAX(FactBiometric[value]), FactBiometric[metric_code] = "vo2max_ml_kg_min"))
+		formatString: 0.0
+		displayFolder: Biometrics
+		lineageTag: 1f184c85-94b2-4854-aaa7-9f1bb22331fd
+
+	/// Cycling VO2max estimate (ACSM: 10.8 x best 5-min power / body weight + 7), best in the selected period. Needs body weight.
+	measure 'VO2max Cycling' = CALCULATE(MAX(FactBiometric[value]), FactBiometric[metric_code] = "vo2max_ml_kg_min", FactBiometric[method] = "estimated_cycling_5min_power_acsm")
+		formatString: 0.0
+		displayFolder: Biometrics
+		lineageTag: 6f6edc99-7f1c-4c3a-9b06-b98655c68feb
+
+	/// Running VO2max estimate (Jack Daniels VDOT from best-effort pace, 1.5 km - marathon), best in the selected period.
+	measure 'VO2max Running' = CALCULATE(MAX(FactBiometric[value]), FactBiometric[metric_code] = "vo2max_ml_kg_min", FactBiometric[method] = "estimated_running_vdot")
+		formatString: 0.0
+		displayFolder: Biometrics
+		lineageTag: d3ec5d80-e37d-4823-b13e-4ee24abeebc8
+
+	measure 'VO2max Source' =
+			IF(CALCULATE(MAX(FactBiometric[value]), FactBiometric[metric_code] = "vo2max_ml_kg_min", FactBiometric[is_estimate] = FALSE()) > 0, "Measured by device",
+			    IF(ISBLANK([VO2max Running]) && ISBLANK([VO2max Cycling]), "No estimate in this period", "Estimated per sport"))
+		displayFolder: Biometrics
+		lineageTag: c06562e8-6d0b-42cd-bedb-bef7c57860e3
+
+	/// Latest known body weight up to the end of the selected period.
+	measure 'Body Weight kg' =
+			VAR _end = MIN(MAX(DimDate[Date]), TODAY())
+			RETURN
+			    IF(MIN(DimDate[Date]) > TODAY(), BLANK(),
+			    CALCULATE(
+			        LASTNONBLANKVALUE(DimDate[Date], AVERAGE(FactBiometric[value])),
+			        FactBiometric[metric_code] = "body_weight_kg",
+			        REMOVEFILTERS(DimPeriod), REMOVEFILTERS(DimDate),
+			        DimDate[Date] <= _end
+			    ))
+		formatString: 0.0
+		displayFolder: Biometrics
+		lineageTag: a1a9118b-944c-4af8-842b-7025f8ca2677
+
+	/// FTP for the selected period: 95% of the best 20-min power in the period, else the profile FTP.
+	measure 'FTP Latest W' = COALESCE([FTP Estimate W], [FTP Any Source W])
+		formatString: 0
+		displayFolder: Biometrics
+		lineageTag: 4b1f3a06-7707-4277-8d6c-cca9cdeba51c
+
+	measure 'FTP Any Source W' =
+			VAR _end = MIN(MAX(DimDate[Date]), TODAY())
+			RETURN
+			    IF(MIN(DimDate[Date]) > TODAY(), BLANK(),
+			    CALCULATE(
+			        LASTNONBLANKVALUE(DimDate[Date], MAX(FactBiometric[value])),
+			        FactBiometric[metric_code] = "ftp_watts",
+			        REMOVEFILTERS(DimPeriod), REMOVEFILTERS(DimDate),
+			        DimDate[Date] <= _end
+			    ))
+		formatString: 0
+		displayFolder: Biometrics
+		lineageTag: 00e05a1f-74bf-429e-9b37-3ac8f26124c0
+
+	measure 'W per kg' = DIVIDE([FTP Latest W], [Body Weight kg])
+		formatString: 0.00
+		displayFolder: Biometrics
+		lineageTag: b4f8dfa0-a8e7-4603-b0a6-c6e516cd655c
+
+	measure 'Max HR Latest' =
+			VAR _end = MIN(MAX(DimDate[Date]), TODAY())
+			RETURN
+			    IF(MIN(DimDate[Date]) > TODAY(), BLANK(),
+			    CALCULATE(
+			        LASTNONBLANKVALUE(DimDate[Date], MAX(FactBiometric[value])),
+			        FactBiometric[metric_code] = "max_heart_rate_bpm",
+			        REMOVEFILTERS(DimPeriod), REMOVEFILTERS(DimDate),
+			        DimDate[Date] <= _end
+			    ))
+		formatString: 0
+		displayFolder: Biometrics
+		lineageTag: cf81e424-62c7-4a4c-a9e8-dab7ae9f66d8
+
+	measure 'Resting HR' = CALCULATE(AVERAGE(FactBiometric[value]), FactBiometric[metric_code] = "resting_heart_rate_bpm")
+		formatString: 0
+		displayFolder: Biometrics
+		lineageTag: 7f9ed84f-7b3a-455d-b65b-7d325e74b1a6
+
+	measure 'HRV ms' = CALCULATE(AVERAGE(FactBiometric[value]), FactBiometric[metric_code] = "hrv_rmssd_ms")
+		formatString: 0
+		displayFolder: Biometrics
+		lineageTag: 2236ff8d-b0ad-41cc-bdcf-8a2d87561099
+
+	column date_key
+		dataType: dateTime
+		isHidden
+		formatString: Short Date
+		sourceProviderType: date
+		lineageTag: 57e121d7-44b8-4d78-b9cd-a43d9d7f34a4
+		sourceLineageTag: date_key
+		summarizeBy: none
+		sourceColumn: date_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column metric_code
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 77c70ac1-1b4c-47fb-b390-678327ef1b4f
+		sourceLineageTag: metric_code
+		summarizeBy: none
+		sourceColumn: metric_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column metric_name
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 6eb72027-e026-4b8b-8f87-382cdd4b7d41
+		sourceLineageTag: metric_name
+		summarizeBy: none
+		sourceColumn: metric_name
+
+		annotation SummarizationSetBy = Automatic
+
+	column unit
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 761efda2-80fd-4e8e-a247-947c69d482bb
+		sourceLineageTag: unit
+		summarizeBy: none
+		sourceColumn: unit
+
+		annotation SummarizationSetBy = Automatic
+
+	column value
+		dataType: double
+		formatString: #,0.0
+		sourceProviderType: float
+		lineageTag: 2d0dcba8-d887-4a01-aef8-92af57411aea
+		sourceLineageTag: value
+		summarizeBy: none
+		sourceColumn: value
+
+		annotation SummarizationSetBy = Automatic
+
+	column method
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: e5b4e279-6dbe-438f-9907-c18895612f21
+		sourceLineageTag: method
+		summarizeBy: none
+		sourceColumn: method
+
+		annotation SummarizationSetBy = Automatic
+
+	column method_label
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 2658d5c8-7292-435c-a510-a3efbe42ec01
+		sourceLineageTag: method_label
+		summarizeBy: none
+		sourceColumn: method_label
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_estimate
+		dataType: boolean
+		sourceProviderType: bit
+		lineageTag: 16171d9a-ffc6-4663-beff-294241de2caa
+		sourceLineageTag: is_estimate
+		summarizeBy: none
+		sourceColumn: is_estimate
+
+		annotation SummarizationSetBy = Automatic
+
+	column source_system
+		dataType: string
+		sourceProviderType: varchar(8000)
+		lineageTag: 635685a6-ed26-43ef-a44a-13763984ee85
+		sourceLineageTag: source_system
+		summarizeBy: none
+		sourceColumn: source_system
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FactBiometric = entity
+		mode: directLake
+		source
+			entityName: FactBiometric
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
+	annotation PBI_ResultType = Table
