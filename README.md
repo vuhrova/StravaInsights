@@ -8,6 +8,9 @@ Open source (MIT) — install it into your own Fabric workspace with your own St
 Nothing in this repository belongs to a specific person: every workspace, lakehouse, Key Vault and item reference is a
 placeholder that the installer replaces with yours.
 
+<img width="1534" height="1016" alt="strava-insights-linkedin-sample" src="https://github.com/user-attachments/assets/ff51131d-87b3-4af1-b331-1cd3082cdab3" />
+
+
 ## Set it up with your own account
 
 You need a Microsoft Fabric capacity (a free [Fabric trial](https://learn.microsoft.com/fabric/fundamentals/fabric-trial)
