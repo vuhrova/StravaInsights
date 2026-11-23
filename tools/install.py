@@ -4,7 +4,7 @@
 
 What it does (every step is idempotent - run it again to upgrade after ``git pull``):
 
-1. Finds or creates the Fabric workspace on your capacity.
+1. Finds or creates the Fabric workspace on your capacity and sets its Spark runtime to Fabric runtime 2.0.
 2. Creates the lakehouses Bronze (with schemas), Strava_Silver and Strava_Gold.
 3. Finds or creates the Azure Key Vault and gives your account the "Key Vault Secrets Officer" role.
 4. Connects Strava: asks once for your Strava API app's Client ID / Secret and opens Strava's consent page
@@ -39,6 +39,7 @@ MODEL = "StravaInsights_SM"
 REPORT = "Strava Insights"
 AGENT = "Strava insights agent"
 SECRETS_OFFICER = "Key Vault Secrets Officer"
+SPARK_RUNTIME = "2.0"  # Fabric runtime 2.0 (Apache Spark 4.1, Delta Lake 4.2); runtime 1.3 ends support on 2027-03-31
 
 
 def step(n: int, text: str) -> None:
@@ -99,6 +100,25 @@ def ensure_workspace(name: str, capacity: str | None) -> dict:
             fs.call("POST", f"/workspaces/{ws['id']}/assignToCapacity", {"capacityId": cap["id"]})
             print(f"  assigned capacity {cap['displayName']}")
     return ws
+
+
+def ensure_spark_runtime(ws_id: str) -> None:
+    url = f"/workspaces/{ws_id}/spark/settings"
+    env = fs.call("GET", url)[2].get("environment") or {}
+    if env.get("name"):
+        print(f"  Spark: workspace default environment '{env['name']}' is used - make sure it runs on "
+              f"Fabric runtime {SPARK_RUNTIME}")
+        return
+    if env.get("runtimeVersion") == SPARK_RUNTIME:
+        print(f"  Spark runtime {SPARK_RUNTIME}")
+        return
+    try:
+        fs.call("PATCH", url, {"environment": {"runtimeVersion": SPARK_RUNTIME}})
+    except fs.FabricError as exc:
+        raise SystemExit(f"Could not set the workspace Spark runtime to {SPARK_RUNTIME} ({exc}). You need the Admin role "
+                         f"on the workspace, or set it in Workspace settings -> Data Engineering/Science -> Spark settings "
+                         f"-> Environment -> Runtime version, then run the installer again.")
+    print(f"  Spark runtime {env.get('runtimeVersion') or 'default'} -> {SPARK_RUNTIME}")
 
 
 def ensure_lakehouses(ws_id: str) -> None:
@@ -244,6 +264,7 @@ def main() -> None:
     step(1, "Fabric workspace")
     ws = ensure_workspace(args.workspace, args.capacity)
     ws_id = ws["id"]
+    ensure_spark_runtime(ws_id)
     step(2, "Lakehouses")
     ensure_lakehouses(ws_id)
 

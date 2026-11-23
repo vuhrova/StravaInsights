@@ -56,7 +56,8 @@ python tools/install.py --workspace "Strava Insights" --key-vault <unique-vault-
 
 What happens:
 
-1. Your Fabric workspace is created on your capacity (or reused).
+1. Your Fabric workspace is created on your capacity (or reused), and its Spark runtime is set to
+   [Fabric runtime 2.0](https://learn.microsoft.com/fabric/data-engineering/runtime-2-0) (Apache Spark 4.1, Delta Lake 4.2).
 2. Three lakehouses are created: **Bronze** (raw data), **Strava_Silver** (clean data) and **Strava_Gold** (report data).
 3. The Key Vault is created and your account gets the *Key Vault Secrets Officer* role.
 4. **Strava**: paste the Client ID and Client Secret when asked. Your browser opens Strava's consent page. Keep all
@@ -104,6 +105,7 @@ read the numbers and [longevity-metrics.md](longevity-metrics.md) for every form
 | Run marked failed with `DataQualityFailed` | A data check failed. The report is still refreshed: the status line at the bottom of each report page names the problem; the `DataQualityCheck` table in the Strava_Gold lakehouse shows every check with its observed and expected value. Most failures clear on the next run; persistent ones are a bug, please open an issue with the check name. |
 | Browser shows *redirect_uri invalid* during Strava authorization | The app's *Authorization Callback Domain* must be `localhost`. |
 | `SQL endpoints still provisioning` | New lakehouses can take a few minutes. Run the installer again. |
+| `Could not set the workspace Spark runtime to 2.0` | Changing Spark settings needs the *Admin* role on the workspace. Ask a workspace admin, or set **Workspace settings → Data Engineering/Science → Spark settings → Environment → Runtime version** to 2.0 yourself, then run the installer again. |
 | Data agent skipped | Needs a paid F2+ capacity and the Fabric data agent tenant setting. Optional. |
 
 ## Privacy and security
